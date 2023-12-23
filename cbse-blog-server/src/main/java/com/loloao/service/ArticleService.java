@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.loloao.entity.Article;
 import com.loloao.vo.ArticleVo;
 import com.loloao.vo.PageVo;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -42,5 +43,13 @@ public interface ArticleService extends IService<Article> {
 
     List<Article> listNewArticles(int limit);
 
+
+
     List<ArticleVo> listArchives();
+
+
+
+    /*@Select("select * from t_station where no = #{paramNo}" and type = #{paramType}")
+    List<TStation> getStationByNo(String paramNo ,String paramType);*/
+
 }

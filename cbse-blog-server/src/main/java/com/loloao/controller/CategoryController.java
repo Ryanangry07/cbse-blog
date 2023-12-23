@@ -33,9 +33,9 @@ public class CategoryController {
 
     @GetMapping
     public Result listCategorys() {
-        List<Category> categorys = categoryService.findAll();
+        //List<Category> categorys = categoryService.findAll();
 
-        return Result.success(categorys);
+        return Result.success(categoryService.list());
     }
 
     @GetMapping("detail")

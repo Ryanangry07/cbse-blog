@@ -2,11 +2,14 @@ package com.loloao.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loloao.entity.Category;
+import com.loloao.mapper.ArticleMapper;
 import com.loloao.mapper.CategoryMapper;
 import com.loloao.service.CategoryService;
 import com.loloao.vo.CategoryVO;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +20,12 @@ import java.util.List;
  */
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
+
+    @Resource
+    public CategoryMapper categoryMapper;
+
+    @Resource
+    public ArticleMapper articleMapper;
 
     @Override
     public List<Category> findAll() {
@@ -45,7 +54,22 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public List<CategoryVO> findAllDetail() {
-        return null;
+        List<Category> categories = categoryMapper.selectList(null);
+        List<CategoryVO> categoryVOS = new ArrayList<>();
+        for(Category category : categories){
+
+            CategoryVO categoryVO = new CategoryVO();
+            categoryVO.setId(category.getId());
+            categoryVO.setAvatar(category.getAvatar());
+            categoryVO.setDescription(category.getDescription());
+            categoryVO.setCategoryname(category.getCategoryname());
+            //get article counts
+            int articlesCount = articleMapper.getCountArticleByCategoryId(category.getId());
+            categoryVO.setArticles(articlesCount);
+            //add
+            categoryVOS.add(categoryVO);
+        }
+        return categoryVOS;
     }
 
     @Override

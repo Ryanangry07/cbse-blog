@@ -31,9 +31,8 @@ public class TagController {
 
     @GetMapping
     public Result listTags() {
-        List<Tag> tags = tagService.findAll();
-
-        return Result.success(tags);
+        //List<Tag> tags = tagService.findAll();
+        return Result.success(tagService.list());
     }
 
     @GetMapping("detail")

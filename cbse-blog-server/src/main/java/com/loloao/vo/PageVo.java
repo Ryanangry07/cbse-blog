@@ -10,7 +10,7 @@ public class PageVo {
 
     private String sort;
 
-    public Integer getPageNumber() {
+    public Integer  getPageNumber() {
         return pageNumber;
     }
 

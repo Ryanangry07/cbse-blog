@@ -52,6 +52,10 @@ public class ArticleController {
         return Result.success(articles);
     }
 
+    /**
+     * get hot top ranking articles
+     * @return
+     */
     @GetMapping("/hot")
     @FastJsonView(include = {@FastJsonFilter(clazz = Article.class, props = {"id", "title"})})
     public Result listHotArticles() {
@@ -61,6 +65,10 @@ public class ArticleController {
         return Result.success(articles);
     }
 
+    /**
+     * get new articles
+     * @return
+     */
     @GetMapping("/new")
     @FastJsonView(include = {@FastJsonFilter(clazz = Article.class, props = {"id", "title"})})
     public Result listNewArticles() {

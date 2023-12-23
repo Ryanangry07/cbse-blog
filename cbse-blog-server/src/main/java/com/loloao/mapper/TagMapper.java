@@ -2,6 +2,9 @@ package com.loloao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.loloao.entity.Tag;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 
 /**
@@ -12,4 +15,7 @@ import com.loloao.entity.Tag;
  */
 public interface TagMapper extends BaseMapper<Tag> {
 
+    @Select("SELECT t.*, count(at.tag_id) as count FROM me_article_tag at " +
+            "RIGHT JOIN  me_tag t  ON  at.tag_id=t.id GROUP BY at.tag_id ORDER BY count DESC LIMIT #{limit}")
+    List<Tag> listHotTagsByArticleUse(int limit);
 }

@@ -3,6 +3,11 @@ package com.loloao.entity;
 import java.util.Date;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +31,9 @@ public class Article  {
 
     
     private Integer commentCounts;
-    
+
+    //@JSONField(format = "yyyy.MM.dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createDate;
     
     private String summary;
@@ -36,11 +43,20 @@ public class Article  {
     private Integer viewCounts;
     
     private Integer weight;
-    
+
     private Long authorId;
+
+    @TableField(exist = false)
+    private User author;
     
     private Long bodyId;
     
     private Integer categoryId;
+
+    @TableField(exist = false)
+    private Category category;
+
+    @TableField(exist = false)
+    private List<Tag> tags;
     
 }
