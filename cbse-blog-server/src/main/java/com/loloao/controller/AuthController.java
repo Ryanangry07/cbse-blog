@@ -74,6 +74,7 @@ public class AuthController {
             subject.login(token);
 
             User currentUser = userService.getUserByAccount(account);
+            System.out.println("SessionID == set user ==" + subject.getSession().getId());
             subject.getSession().setAttribute(Base.CURRENT_USER, currentUser);
 
             result.setResultCode(ResultCode.SUCCESS);
