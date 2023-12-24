@@ -8,9 +8,9 @@ public class ArticleVo extends Article {
 
     private Integer month;
 
-    private Integer tagId;
+    private Long tagId;
 
-    private Integer categoryId;
+    private Long categoryId;
 
     private Integer count;
 
@@ -22,19 +22,19 @@ public class ArticleVo extends Article {
         this.month = month;
     }
 
-    public Integer getTagId() {
+    public Long getTagId() {
         return tagId;
     }
 
-    public void setTagId(Integer tagId) {
+    public void setTagId(Long tagId) {
         this.tagId = tagId;
     }
 
-    public Integer getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 

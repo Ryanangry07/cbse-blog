@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 public class Article  {
     //primary key
     @TableId
-    private Integer id;
+    private Long id;
 
     
     private Integer commentCounts;
@@ -50,8 +50,11 @@ public class Article  {
     private User author;
     
     private Long bodyId;
+
+    @TableField(exist = false)
+    private ArticleBody body;
     
-    private Integer categoryId;
+    private Long categoryId;
 
     @TableField(exist = false)
     private Category category;

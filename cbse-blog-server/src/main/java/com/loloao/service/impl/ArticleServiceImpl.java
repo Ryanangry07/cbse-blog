@@ -7,12 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.loloao.entity.Article;
-import com.loloao.entity.Category;
-import com.loloao.entity.User;
-import com.loloao.mapper.ArticleMapper;
-import com.loloao.mapper.CategoryMapper;
-import com.loloao.mapper.UserMapper;
+import com.loloao.entity.*;
+import com.loloao.mapper.*;
 import com.loloao.service.ArticleService;
 import com.loloao.vo.ArticleVo;
 import com.loloao.vo.PageVo;
@@ -38,6 +34,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     public UserMapper userMapper;
+
+    @Resource
+    public ArticleBodyMapper articleBodyMapper;
+
+    @Resource
+    public TagMapper tagMapper;
 
     @Override
     public List<Article> listArticles(PageVo pageVo) {
@@ -73,24 +75,71 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         int size = pageVo.getPageSize().intValue();
         //IPage<Article> page = new Page<>(pageVo.getPageNumber(), pageVo.getPageSize());
         //System.out.println("page num: " + pageVo.getPageNumber() + " page size: " + pageVo.getPageSize());
+
+        //filter query conditions
         QueryWrapper<Article> wrapper = new QueryWrapper<>();
         wrapper.eq(ObjectUtils.isNotNull(article.getYear()),"DATE_FORMAT (create_date,'%Y')", article.getYear());
         wrapper.eq(ObjectUtils.isNotNull(article.getMonth()),"DATE_FORMAT (create_date,'%m')", article.getMonth());
+        wrapper.in(ObjectUtils.isNotNull(article.getTagId()), "id", articleMapper.getArticleIdsByTagId(article.getTagId()));
+        wrapper.eq(ObjectUtils.isNotNull(article.getCategoryId()), "category_id", article.getCategoryId());
         wrapper.last("order by create_date desc");
         wrapper.last("LIMIT " + ((cur - 1) * size) + ", " + size);
-        // query condition
+
+
+        //package result list
         //IPage<Article> result = articleMapper.selectPage(page, wrapper);
-        List<Article> list = articleMapper.selectList(wrapper);
+        List<Article> list = fillAuthorCategoryTagsById(articleMapper.selectList(wrapper));
+
+        // tag condition
+        if(ObjectUtils.isNotNull(article.getTagId())){
+
+        }
 
         // handle many to one relationship
         //List<Article> list = result.getRecords();
-        for(Article a : list){
+        /*for(Article a : list){
             User author = userMapper.selectById(a.getAuthorId());
             Category category = categoryMapper.selectById(a.getCategoryId());
             a.setAuthor(author);
             a.setCategory(category);
+        }*/
+        return list;
+    }
+
+    // handle many to one relationship
+    private List<Article> fillAuthorCategoryTagsById(List<Article> list){
+        for(Article a : list){
+            User author = userMapper.selectById(a.getAuthorId());
+            Category category = categoryMapper.selectById(a.getCategoryId());
+            List<Tag> tags = tagMapper.getTagsByArticleId(a.getId());
+            a.setAuthor(author);
+            a.setCategory(category);
+            a.setTags(tags);
         }
         return list;
+    }
+
+
+    // handle many to one relationship
+    private List<Article> fillAuthorCategoryBodyByIds(List<Article> list){
+        for(Article article : list){
+            fillAuthorCategoryBodyTagsById(article);
+        }
+        return list;
+    }
+
+    /**
+     * because we can only get authorId,categoryId,bodyId from database
+     * so this method is to fill in the object by these ids
+     * @param article
+     * @return
+     */
+    private Article fillAuthorCategoryBodyTagsById(Article article){
+            article.setAuthor(userMapper.selectById(article.getAuthorId()));
+            article.setCategory(categoryMapper.selectById(article.getCategoryId()));
+            article.setBody(articleBodyMapper.selectById(article.getBodyId()));
+            article.setTags(tagMapper.getTagsByArticleId(article.getId()));
+        return article;
     }
 
 
@@ -126,12 +175,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public List<Article> findAll() {
-        return null;
+        return articleMapper.selectList(null);
     }
 
     @Override
     public Article getArticleById(Integer id) {
-        return null;
+        return articleMapper.selectById(id);
     }
 
     @Override
@@ -166,7 +215,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public Article getArticleAndAddViews(Integer id) {
-        return null;
+        Article article = articleMapper.selectById(id);
+
+        // fill author, category, body by id
+        article = fillAuthorCategoryBodyTagsById(article);
+        article.setViewCounts(article.getViewCounts() + 1);
+        return article;
     }
 
     @Override

@@ -15,6 +15,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("articleBody")
+@Deprecated
 public class ArticleBodyController {
     /**
      * 服务对象

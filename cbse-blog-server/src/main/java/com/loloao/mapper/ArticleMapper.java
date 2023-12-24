@@ -33,4 +33,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     @Select("SELECT COUNT(*) AS count FROM me_article_tag at WHERE at.tag_id = #{id}")
     int getCountArticleByTagId(Integer id);
+
+    @Select("SELECT at.article_id FROM me_article_tag at WHERE at.tag_id = #{tagId}")
+    List<Integer> getArticleIdsByTagId(Long tagId);
 }

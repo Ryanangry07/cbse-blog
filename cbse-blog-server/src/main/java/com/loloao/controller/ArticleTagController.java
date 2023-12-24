@@ -14,6 +14,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("articleTag")
+@Deprecated
 public class ArticleTagController {
     /**
      * 服务对象
