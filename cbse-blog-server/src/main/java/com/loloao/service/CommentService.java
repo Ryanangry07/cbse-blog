@@ -22,7 +22,7 @@ public interface CommentService extends IService<Comment> {
 
     void deleteCommentById(Integer id);
 
-    List<Comment> listCommentsByArticle(Integer id);
+    List<Comment> listCommentsByArticle(Long articleId);
 
     Comment saveCommentAndChangeCounts(Comment comment);
 

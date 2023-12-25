@@ -735,6 +735,23 @@ GET http://localhost:8888/comments/article/10
 					"createDate":"2023.12.23 07:33",
 					"id":2,
 					"level":"1"
+				},
+				{
+					"author":{
+						"avatar":"/static/user/user_6.png",
+						"id":16,
+						"nickname":"root"
+					},
+					"childrens":[],
+					"content":"MAYBE YES",
+					"createDate":"2023.12.23 07:38",
+					"id":3,
+					"level":"2",
+					"toUser":{
+						"avatar":"/static/user/user_6.png",
+						"id":16,
+						"nickname":"root"
+					}
 				}
 			],
 			"content":"You are my hero ok?",

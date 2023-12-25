@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2023-12-09 19:20:52
  */
 @RestController
-@RequestMapping("comment")
+@RequestMapping("comments")
 public class CommentController {
     /**
      * 服务对象
@@ -61,7 +61,7 @@ public class CommentController {
             exclude = {
                     @FastJsonFilter(clazz = Comment.class, props = {"article", "parent"})},
             include = {@FastJsonFilter(clazz = User.class, props = {"id", "nickname", "avatar"})})
-    public Result listCommentsByArticle(@PathVariable("id") Integer id) {
+    public Result listCommentsByArticle(@PathVariable("id") Long id) {
 
         Result r = new Result();
 
