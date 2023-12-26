@@ -7,6 +7,8 @@ me:
   upload:
     path: E:/blogFile/
 
+
+
 # mysql
 spring:
   datasource:
@@ -14,6 +16,18 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+
+  #static
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${me.upload.path}
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${me.upload.path}
+  #spring.mvc.static-path-pattern=/**
+  #spring.resources.static-locations=classpath:/META-INF/resources/,classpath:/resources/,\
+  #classpath:/static/,classpath:/public/,file:${me.upload.path}
 
   servlet:
     # file upload

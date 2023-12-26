@@ -91,9 +91,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<Article> list = fillAuthorCategoryTagsById(articleMapper.selectList(wrapper));
 
         // tag condition
-        if(ObjectUtils.isNotNull(article.getTagId())){
+        /*if(ObjectUtils.isNotNull(article.getTagId())){
 
-        }
+        }*/
 
         // handle many to one relationship
         //List<Article> list = result.getRecords();
@@ -217,9 +217,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public Article getArticleAndAddViews(Integer id) {
         Article article = articleMapper.selectById(id);
 
+        // update view counts
+        article.setViewCounts(article.getViewCounts() + 1);
+
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Article::getId, id);
+        articleMapper.update(article, wrapper);
+
         // fill author, category, body by id
         article = fillAuthorCategoryBodyTagsById(article);
-        article.setViewCounts(article.getViewCounts() + 1);
         return article;
     }
 
