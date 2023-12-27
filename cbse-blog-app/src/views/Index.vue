@@ -1,6 +1,8 @@
 <template>
   <div v-title data-title="ForFun Find Yourself">
 
+
+
 <!--    <div>
       <el-input v-model="name" placeholder="Please enter to search" suffix-icon="el-icon-search"
                 style="width: 100%; margin-bottom: 30px" ></el-input>
@@ -10,6 +12,7 @@
 
 
       <el-main class="me-articles">
+
 
         <article-scroll-page></article-scroll-page>
 

@@ -1,9 +1,29 @@
 <template>
   <scroll-page :loading="loading" :offset="offset" :no-data="noData" v-on:load="load">
     <div>
+
+      <el-select v-model="categoryId" filterable placeholder="Category" style="width: 15%; float: left">
+        <el-option
+          v-for="item in categorys"
+          :key="item.id"
+          :label="item.categoryname"
+          :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select v-model="tagId" filterable placeholder="Tag" style="margin-left: 3px; width: 15%; float: left">
+        <el-option
+          v-for="item in tags"
+          :key="item.id"
+          :label="item.tagname"
+          :value="item.id">
+        </el-option>
+      </el-select>
       <el-input v-model="keyword" placeholder="Please enter to search" suffix-icon="el-icon-search"
-                style="width: 100%; margin-bottom: 10px" @keyup.enter.native="searchArticles"></el-input>
+                style="margin-left: 3px; width: 40%; margin-bottom: 10px" @keyup.enter.native="searchArticles"></el-input>
       <!--      @keyup.enter.native="loadList" -->
+
+      <el-button size="medium" type="primary" style="" @click="searchArticles">Search</el-button>
+      <el-button size="medium" type="primary" @click="resetQuery">Reset</el-button>
     </div>
     <article-item v-for="a in articles" :key="a.id" v-bind="a"></article-item>
   </scroll-page>
@@ -13,6 +33,8 @@
   import ArticleItem from '@/components/article/ArticleItem'
   import ScrollPage from '@/components/scrollpage'
   import {getArticles} from '@/api/article'
+  import {getAllCategorys} from '@/api/category'
+  import {getAllTags} from '@/api/tag'
 
   export default {
     name: "ArticleScrollPage",
@@ -56,19 +78,24 @@
     },
     created() {
       this.getArticles()
+      this.getCategorysAndTags()
     },
     data() {
       return {
         loading: false,
         noData: false,
         keyword: '',
+        categoryId: '',
+        tagId: '',
         innerPage: {
           pageSize: 5,
           pageNumber: 1,
           name: 'a.createDate',
           sort: 'desc'
         },
-        articles: []
+        articles: [],
+        categorys: [],
+        tags: []
       }
     },
     methods: {
@@ -106,6 +133,8 @@
         that.loading = true
         that.innerPage.pageNumber = 1
         that.query.keyword = that.keyword
+        that.query.categoryId = that.categoryId
+        that.query.tagId = that.tagId
 
         getArticles(that.query, that.innerPage).then(data => {
 
@@ -126,7 +155,30 @@
         }).finally(() => {
           that.loading = false
         })
+      },
+      getCategorysAndTags() {
+        let that = this
+        getAllCategorys().then(data => {
+          that.categorys = data.data
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: '文章分类加载失败', showClose: true})
+          }
+        })
 
+        getAllTags().then(data => {
+          that.tags = data.data
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: '标签加载失败', showClose: true})
+          }
+        })
+
+      },
+      resetQuery(){
+        this.categoryId = '';
+        this.tagId = '';
+        this.keyword = '';
       }
     },
     components: {

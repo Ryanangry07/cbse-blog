@@ -16,6 +16,7 @@ import com.loloao.vo.PageVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -85,7 +86,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         QueryWrapper<Article> wrapper = new QueryWrapper<>();
         wrapper.eq(ObjectUtils.isNotNull(article.getYear()),"DATE_FORMAT (create_date,'%Y')", article.getYear());
         wrapper.eq(ObjectUtils.isNotNull(article.getMonth()),"DATE_FORMAT (create_date,'%m')", article.getMonth());
-        wrapper.in(ObjectUtils.isNotNull(article.getTagId()), "id", articleMapper.getArticleIdsByTagId(article.getTagId()));
+        if(ObjectUtils.isNotNull(article.getTagId())) {
+            List<Integer> articleIdList = articleMapper.getArticleIdsByTagId(article.getTagId());
+            if(articleIdList.size() > 0) {
+                wrapper.in("id", articleIdList);
+            }else{
+                // no tag fulfilled query condition
+                return new ArrayList<>();
+            }
+        }
         wrapper.eq(ObjectUtils.isNotNull(article.getCategoryId()), "category_id", article.getCategoryId());
         // search (summary and title)
         wrapper.like(StringUtils.isNotBlank(article.getKeyword()), "CONCAT(summary,title)", article.getKeyword());
