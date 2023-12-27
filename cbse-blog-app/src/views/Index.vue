@@ -1,6 +1,13 @@
 <template>
   <div v-title data-title="ForFun Find Yourself">
+
+<!--    <div>
+      <el-input v-model="name" placeholder="Please enter to search" suffix-icon="el-icon-search"
+                style="width: 100%; margin-bottom: 30px" ></el-input>
+      &lt;!&ndash;      @keyup.enter.native="loadList" &ndash;&gt;
+    </div>-->
     <el-container>
+
 
       <el-main class="me-articles">
 

@@ -14,6 +14,8 @@ public class ArticleVo extends Article {
 
     private Integer count;
 
+    private String keyword;
+
     public Integer getMonth() {
         return month;
     }
@@ -54,6 +56,14 @@ public class ArticleVo extends Article {
         this.count = count;
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
     @Override
     public String toString() {
         return "ArticleVo{" +
@@ -62,6 +72,7 @@ public class ArticleVo extends Article {
                 ", tagId=" + tagId +
                 ", categoryId=" + categoryId +
                 ", count=" + count +
+                ", keyword=" + keyword +
                 '}';
     }
 }

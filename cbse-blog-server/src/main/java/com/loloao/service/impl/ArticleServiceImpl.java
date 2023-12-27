@@ -87,6 +87,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         wrapper.eq(ObjectUtils.isNotNull(article.getMonth()),"DATE_FORMAT (create_date,'%m')", article.getMonth());
         wrapper.in(ObjectUtils.isNotNull(article.getTagId()), "id", articleMapper.getArticleIdsByTagId(article.getTagId()));
         wrapper.eq(ObjectUtils.isNotNull(article.getCategoryId()), "category_id", article.getCategoryId());
+        // search (summary and title)
+        wrapper.like(StringUtils.isNotBlank(article.getKeyword()), "CONCAT(summary,title)", article.getKeyword());
         wrapper.last("ORDER BY create_date DESC LIMIT " + ((cur - 1) * size) + ", " + size);
 
 

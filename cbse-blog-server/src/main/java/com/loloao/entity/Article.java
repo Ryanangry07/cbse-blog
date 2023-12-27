@@ -27,6 +27,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 public class Article  {
 
 
+    //BeanUtils.copyProperties(user,userVo);
+
 
     public static final int Article_TOP = 1;
 

@@ -1,5 +1,10 @@
 <template>
   <scroll-page :loading="loading" :offset="offset" :no-data="noData" v-on:load="load">
+    <div>
+      <el-input v-model="keyword" placeholder="Please enter to search" suffix-icon="el-icon-search"
+                style="width: 100%; margin-bottom: 10px" @keyup.enter.native="searchArticles"></el-input>
+      <!--      @keyup.enter.native="loadList" -->
+    </div>
     <article-item v-for="a in articles" :key="a.id" v-bind="a"></article-item>
   </scroll-page>
 </template>
@@ -56,6 +61,7 @@
       return {
         loading: false,
         noData: false,
+        keyword: '',
         innerPage: {
           pageSize: 5,
           pageNumber: 1,
@@ -89,6 +95,33 @@
         }).catch(error => {
           if (error !== 'error') {
             that.$message({type: 'error', message: '文章加载失败!', showClose: true})
+          }
+        }).finally(() => {
+          that.loading = false
+        })
+
+      },
+      searchArticles() {
+        let that = this
+        that.loading = true
+        that.innerPage.pageNumber = 1
+        that.query.keyword = that.keyword
+
+        getArticles(that.query, that.innerPage).then(data => {
+
+          let newArticles = data.data
+          if (newArticles && newArticles.length > 0) {
+            that.innerPage.pageNumber += 1
+            // that.articles = that.articles.concat(newArticles)
+            that.articles = newArticles
+          } else {
+            this.articles = []
+            that.noData = true
+          }
+
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'Articles load failed!', showClose: true})
           }
         }).finally(() => {
           that.loading = false
