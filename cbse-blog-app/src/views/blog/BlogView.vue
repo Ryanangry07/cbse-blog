@@ -21,17 +21,29 @@
               <div class="me-view-meta">
                 <span>{{article.createDate | format}}</span>
                 <span>阅读   {{article.viewCounts}}</span>
+                <span>点赞   {{article.starCounts}}</span>
                 <span>评论   {{article.commentCounts}}</span>
               </div>
-
             </div>
             <el-button
               v-if="this.article.author.id == this.$store.state.id"
               @click="editArticle()"
-              style="position: absolute;left: 60%;"
+              style="position: absolute;left: 55%;"
               size="mini"
               round
               icon="el-icon-edit">编辑</el-button>
+            <!--              v-if="this.article.author.id == this.$store.state.id"-->
+            <el-button
+              @click="deleteArticle()"
+              style="position: absolute;left: 60%;"
+              size="mini"
+              round
+              icon="el-icon-delete">删除</el-button>
+
+
+            <span class="me-pull-right me-article-count" style="margin-right: 30px">
+                  <i :class="article.starStatus" style="cursor: pointer" @click="starArticle"></i>&nbsp;{{article.starCounts}}
+            </span>
           </div>
           <div class="me-view-content">
             <markdown-editor :editor=article.editor></markdown-editor>
@@ -111,7 +123,7 @@
 <script>
   import MarkdownEditor from '@/components/markdown/MarkdownEditor'
   import CommmentItem from '@/components/comment/CommentItem'
-  import {viewArticle} from '@/api/article'
+  import {viewArticle, starArticle, loadStar} from '@/api/article'
   import {getCommentsByArticle, publishComment} from '@/api/comment'
 
   import default_avatar from '@/assets/img/default_avatar.png'
@@ -120,6 +132,7 @@
     name: 'BlogView',
     created() {
       this.getArticle()
+      this.loadStar()
     },
     watch: {
       '$route': 'getArticle'
@@ -131,6 +144,8 @@
           title: '',
           commentCounts: 0,
           viewCounts: 0,
+          starCounts: 0,
+          starStatus: 'el-icon-star-on',
           summary: '',
           author: {},
           tags: [],
@@ -169,6 +184,9 @@
       },
       editArticle() {
         this.$router.push({path: `/write/${this.article.id}`})
+      },
+      deleteArticle() {
+        //this.$router.push({path: `/write/${this.article.id}`})
       },
       getArticle() {
         let that = this
@@ -213,6 +231,39 @@
       },
       commentCountsIncrement() {
         this.article.commentCounts += 1
+      },
+      loadStar(){
+        console.log('load current star')
+        //load current star
+        let that = this
+        let userId = this.$store.state.id
+        loadStar(that.$route.params.id, userId).then(data => {
+          that.article.starStatus = data.data.starStatus
+          that.article.starCounts = data.data.starCounts
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'star failed', showClose: true})
+          }
+        })
+      },
+      starArticle(){
+        //star()
+        //this.starStatus =
+        let that = this
+        let userId = this.$store.state.id
+        starArticle(that.article.id, userId).then(data => {
+          //that.starStatus = data.data.starStatus
+          console.log(data.data.starStatus)
+          that.article.starStatus = (that.article.starStatus === 'el-icon-star-off') ? 'el-icon-star-on' : 'el-icon-star-off';
+          that.article.starCounts = data.data.starCounts
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'star failed', showClose: true})
+          }
+        })
+      },
+      setStar(starStatus){
+        this.starStatus = starStatus
       }
     },
     components: {

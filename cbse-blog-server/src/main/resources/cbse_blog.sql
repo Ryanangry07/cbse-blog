@@ -155,4 +155,10 @@ create table `sys_user` (
                             unique key `UK_ahtq5ew3v0kt1n7hf1sgp7p8l` (`email`)
 ) engine=innodb auto_increment=16 default charset=utf8;
 
+drop table if exists `me_star`;
+create table `me_star` (
+                                  `user_id` int(11) not null,
+                                  `article_id` int(11) not null
+) engine=innodb default charset=utf8;
+
 set foreign_key_checks = 1;

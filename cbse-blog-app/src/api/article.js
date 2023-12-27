@@ -19,6 +19,28 @@ export function getArticles(query, page) {
   })
 }
 
+export function starArticle(articleId, userId) {
+  return request({
+    url: '/star',
+    method: 'get',
+    params: {
+      articleId: articleId,
+      userId: userId
+    }
+  })
+}
+
+export function loadStar(articleId, userId) {
+  return request({
+    url: '/star/loadStar',
+    method: 'get',
+    params: {
+      articleId: articleId,
+      userId: userId
+    }
+  })
+}
+
 export function getHotArtices() {
   return request({
     url: '/articles/hot',

@@ -8,6 +8,9 @@
 	    	<i class="me-icon-comment"></i>&nbsp;{{commentCounts}}
 	    </span>
       <span class="me-pull-right me-article-count">
+	    	<i class="el-icon-star-off"></i>&nbsp;{{starCounts}}
+	    </span>
+      <span class="me-pull-right me-article-count">
 	    	<i class="el-icon-view"></i>&nbsp;{{viewCounts}}
 	    </span>
     </div>
@@ -41,6 +44,7 @@
       title: String,
       commentCounts: Number,
       viewCounts: Number,
+      starCounts: Number,
       summary: String,
       author: Object,
       tags: Array,

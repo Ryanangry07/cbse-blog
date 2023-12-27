@@ -51,7 +51,9 @@ public class Article  {
     private String title;
     
     private Integer viewCounts;
-    
+
+    private Integer starCounts;
+
     private Integer weight;
 
     private Long authorId;
