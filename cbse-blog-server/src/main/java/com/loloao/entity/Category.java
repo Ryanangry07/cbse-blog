@@ -20,7 +20,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("me_category")
 public class Category  {
     @TableId
-    private Integer id;
+    private Long id;
 
     
     private String avatar;

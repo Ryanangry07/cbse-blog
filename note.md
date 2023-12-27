@@ -658,6 +658,84 @@ GET http://localhost:8888/tags
 
 
 
+### API 发布文章
+
+POST http://localhost:8888/articles/publish
+
+```
+Payload:
+{
+	"id":"",
+	"title":"new article from ryan",
+	"summary":"that's all",
+	"category":{
+		"avatar":"/category/lift.jpg",
+		"categoryname":"生活",
+		"description":"",
+		"id":3
+	},
+	"tags":[
+		{"id":4},
+		{"id":2},
+		{"id":7},
+		{"id":1}
+	],
+	"body":{
+		"content":"this is a new article from ryan",
+		"contentHtml":"<p>this is a new article from ryan</p>\n"
+	}
+}
+
+Response:
+{
+	"code":0,
+	"data":{
+		"articleId":26
+	},
+	"msg":"成功"
+}
+```
+
+
+
+### API 修改文章
+
+POST http://localhost:8888/articles/publish
+
+```
+Payload:
+{
+	"id":26,
+	"title":"new article from ryan",
+	"summary":"same, that's all",
+	"category":{
+		"avatar":"/category/back.png",
+		"categoryname":"后端",
+		"description":"",
+		"id":2
+	},
+	"tags":[
+		{"id":1}
+	],
+	"body":{
+		"content":"this is a ~~new~~ (updated) article from ryan",
+		"contentHtml":"<p>this is a <s>new</s> (updated) article from ryan</p>\n"
+	}
+}
+
+Response:
+{
+	"code":0,
+	"data":{
+		"articleId":26
+	},
+	"msg":"成功"
+}
+```
+
+
+
+
 ### API 文章详情
 
 GET http://localhost:8888/articles/view/10

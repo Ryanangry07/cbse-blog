@@ -152,7 +152,7 @@ public class ArticleController {
     @RequiresAuthentication
     public Result saveArticle(@Validated @RequestBody Article article) {
 
-        Integer articleId = articleService.publishArticle(article);
+        Long articleId = articleService.publishArticle(article);
 
         Result result = Result.success();
         result.simple().put("articleId", articleId);
@@ -169,7 +169,7 @@ public class ArticleController {
             return result;
         }
 
-        Integer articleId = articleService.updateArticle(article);
+        Long articleId = articleService.updateArticle(article);
 
         result.setResultCode(ResultCode.SUCCESS);
         result.simple().put("articleId", articleId);

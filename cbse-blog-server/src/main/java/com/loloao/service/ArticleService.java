@@ -25,11 +25,11 @@ public interface ArticleService extends IService<Article> {
 
     Article getArticleById(Integer id);
 
-    Integer publishArticle(Article article);
+    Long publishArticle(Article article);
 
-    Integer saveArticle(Article article);
+    Long saveArticle(Article article);
 
-    Integer updateArticle(Article article);
+    Long updateArticle(Article article);
 
     void deleteArticleById(Integer id);
 

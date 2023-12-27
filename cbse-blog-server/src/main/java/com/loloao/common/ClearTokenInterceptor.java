@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 
-public class ClearTokenInteceptor extends HandlerInterceptorAdapter {
+public class ClearTokenInterceptor extends HandlerInterceptorAdapter {
 
     private static final String SESSION_TIME_OUT_K = "SESSION_TIME_OUT";
     private static final String SESSION_TIME_OUT_V = "timeout";

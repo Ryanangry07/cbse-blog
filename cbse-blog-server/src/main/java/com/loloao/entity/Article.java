@@ -25,6 +25,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @NoArgsConstructor
 @TableName("me_article")
 public class Article  {
+
+
+
+    public static final int Article_TOP = 1;
+
+    public static final int Article_Common = 0;
+
+
     //primary key
     @TableId
     private Long id;

@@ -74,6 +74,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     public List<Comment> listCommentsByArticle(Long articleId) {
         // get level 0, order by create_date desc
         List<Comment> list = listCommentsByArticleOfLevel0(articleId);
+        System.out.println("listCommentsByArticle=> aid:" + articleId + ", level0:" + list.size());
         // traverse each comment
         for(Comment comment: list) {
             //, fill author object
@@ -143,7 +144,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
          * }
          */
 
-        return null;
+        return list;
     }
 
     @Override
@@ -169,6 +170,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             }
         }
 
+        
         if(ObjectUtils.isNotEmpty(comment.getToUser())){
             comment.setToUid(comment.getToUser().getId());
         }

@@ -10,11 +10,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loloao.entity.*;
 import com.loloao.mapper.*;
 import com.loloao.service.ArticleService;
+import com.loloao.utils.UserUtils;
 import com.loloao.vo.ArticleVo;
 import com.loloao.vo.PageVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,6 +42,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     public TagMapper tagMapper;
+
+    @Resource
+    public ArticleTagMapper articleTagMapper;
 
     @Override
     public List<Article> listArticles(PageVo pageVo) {
@@ -82,8 +87,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         wrapper.eq(ObjectUtils.isNotNull(article.getMonth()),"DATE_FORMAT (create_date,'%m')", article.getMonth());
         wrapper.in(ObjectUtils.isNotNull(article.getTagId()), "id", articleMapper.getArticleIdsByTagId(article.getTagId()));
         wrapper.eq(ObjectUtils.isNotNull(article.getCategoryId()), "category_id", article.getCategoryId());
-        wrapper.last("order by create_date desc");
-        wrapper.last("LIMIT " + ((cur - 1) * size) + ", " + size);
+        wrapper.last("ORDER BY create_date DESC LIMIT " + ((cur - 1) * size) + ", " + size);
 
 
         //package result list
@@ -184,18 +188,83 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public Integer publishArticle(Article article) {
-        return null;
+    public Long publishArticle(Article article) {
+        if(null != article.getId()){
+            return this.updateArticle(article);
+        }else{
+            return this.saveArticle(article);
+        }
     }
 
     @Override
-    public Integer saveArticle(Article article) {
-        return null;
+    public Long saveArticle(Article article) {
+
+        // fill in properties
+        User currentUser = UserUtils.getCurrentUser();
+        if (null != currentUser) {
+            article.setAuthor(currentUser);
+            article.setAuthorId(currentUser.getId());
+        }
+        article.setViewCounts(0);
+        article.setCommentCounts(0);
+        article.setCategoryId(article.getCategory().getId());
+        article.setCreateDate(new Date());
+        article.setWeight(Article.Article_Common);
+
+        // save body table
+        ArticleBody body = new ArticleBody();
+        body.setContent(article.getBody().getContent());
+        body.setContentHtml(article.getBody().getContentHtml());
+        articleBodyMapper.insert(body);
+        // update body_id
+        article.setBodyId(body.getId());
+
+        // save article table
+        articleMapper.insert(article);
+
+        // save article-tag relationships table
+        // create new article-tag relationships
+        for(Tag tag: article.getTags()){
+            articleTagMapper.insert(new ArticleTag(article.getId(), tag.getId()));
+        }
+
+        return article.getId();
     }
 
     @Override
-    public Integer updateArticle(Article article) {
-        return null;
+    public Long updateArticle(Article article) {
+        Article oldArticle = articleMapper.selectById(article.getId());
+
+        // update basic information
+        oldArticle.setTitle(article.getTitle());
+        oldArticle.setSummary(article.getSummary());
+
+        // update category id
+        oldArticle.setCategory(article.getCategory());
+        oldArticle.setCategoryId(article.getCategory().getId());
+
+        // update body table
+        oldArticle.setBody(article.getBody());
+        ArticleBody body = new ArticleBody(
+                oldArticle.getBodyId(),
+                article.getBody().getContent(),
+                article.getBody().getContentHtml()
+        );
+        articleBodyMapper.updateById(body);
+
+
+        // update article tags table
+        // delete old article-tag relationships
+        LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleTag::getArticleId, oldArticle.getId());
+        articleTagMapper.delete(wrapper);
+        // create new article-tag relationships
+        oldArticle.setTags(article.getTags());
+        for(Tag tag: oldArticle.getTags()){
+            articleTagMapper.insert(new ArticleTag(oldArticle.getId(), tag.getId()));
+        }
+
+        return oldArticle.getId();
     }
 
     @Override

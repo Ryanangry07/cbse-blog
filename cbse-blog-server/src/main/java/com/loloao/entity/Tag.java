@@ -20,7 +20,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("me_tag")
 public class Tag  {
     @TableId
-    private Integer id;
+    private Long id;
 
     
     private String avatar;

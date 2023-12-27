@@ -21,8 +21,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 public class ArticleTag  {
 
     
-    private Integer articleId;
+    private Long articleId;
     
-    private Integer tagId;
+    private Long tagId;
     
 }
