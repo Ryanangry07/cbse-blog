@@ -9,6 +9,7 @@ import com.loloao.entity.Comment;
 import com.loloao.entity.User;
 import com.loloao.enums.ResultCode;
 import com.loloao.service.CommentService;
+import com.loloao.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +82,9 @@ public class CommentController {
     @PostMapping("/create")
     @RequiresAuthentication
     public Result saveComment(@Validated @RequestBody Comment comment) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
 
         Integer commentId = commentService.saveComment(comment);
 
@@ -93,6 +97,9 @@ public class CommentController {
     @GetMapping("/delete/{id}")
     @RequiresAuthentication
     public Result deleteCommentById(@PathVariable("id") Integer id) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result r = new Result();
 
         if (null == id) {
@@ -114,6 +121,9 @@ public class CommentController {
     @RequiresAuthentication
     public Result saveCommentAndChangeCounts(@RequestBody Comment comment) {
 
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Comment savedComment = commentService.saveCommentAndChangeCounts(comment);
 
         Result r = Result.success(savedComment);
@@ -124,6 +134,9 @@ public class CommentController {
     @GetMapping("/delete/change/{id}")
     @RequiresAuthentication
     public Result deleteCommentByIdAndChangeCounts(@PathVariable("id") Integer id) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result r = new Result();
 
         if (null == id) {

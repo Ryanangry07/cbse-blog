@@ -30,7 +30,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ClearTokenInterceptor clearTokenInterceptor = new ClearTokenInterceptor();
         return clearTokenInterceptor;
     }
-
+    /*@Configuration
+    public class FastJsonAutoConfiguration {
+        @Bean
+        public HttpMessageConverter<?> httpMessageConverter() {
+            FastJsonHttpMessageConverter fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter();
+            return fastJsonHttpMessageConverter;
+        }
+    }*/
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 
@@ -50,7 +57,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         fastConverter.setFastJsonConfig(fastJsonConfig);
         fastConverter.setSupportedMediaTypes(fastMediaTypes);
 
-        converters.add(fastConverter);
+        converters.add(0, fastConverter);
     }
 
     @Bean

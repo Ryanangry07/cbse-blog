@@ -9,6 +9,7 @@ import com.loloao.mapper.ArticleMapper;
 import com.loloao.mapper.StarMapper;
 import com.loloao.service.StarService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements St
     }
 
     @Override
+    @Transactional
     public Map<String, Object> starArticle(Star star) {
         // prepare map result
         Map<String, Object> result = new HashMap<>();

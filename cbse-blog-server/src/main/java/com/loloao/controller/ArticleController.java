@@ -13,6 +13,7 @@ import com.loloao.entity.User;
 import com.loloao.enums.ResultCode;
 import com.loloao.service.ArticleService;
 import com.loloao.service.TagService;
+import com.loloao.utils.UserUtils;
 import com.loloao.vo.ArticleVo;
 import com.loloao.vo.PageVo;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -151,6 +152,9 @@ public class ArticleController {
     @PostMapping("/publish")
     @RequiresAuthentication
     public Result saveArticle(@Validated @RequestBody Article article) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
 
         Long articleId = articleService.publishArticle(article);
 
@@ -162,6 +166,9 @@ public class ArticleController {
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result updateArticle(@RequestBody Article article) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result result = new Result();
 
         if (null == article.getId()) {
@@ -178,7 +185,10 @@ public class ArticleController {
 
     @GetMapping("/delete/{id}")
     @RequiresRoles(Base.ROLE_ADMIN)
-    public Result deleteArticleById(@PathVariable("id") Integer id) {
+    public Result deleteArticleById(@PathVariable("id") Long id) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result result = new Result();
 
         if (null == id) {

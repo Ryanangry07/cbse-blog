@@ -60,6 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    @Transactional
     public Long updateUser(User user) {
         return null;
     }

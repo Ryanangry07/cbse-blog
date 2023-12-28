@@ -29,6 +29,7 @@ service.interceptors.response.use(
       store.dispatch('fedLogOut')
     }
 
+
     const res = response.data;
 
     //0 为成功状态

@@ -6,6 +6,7 @@ import com.loloao.entity.User;
 import com.loloao.enums.ResultCode;
 import com.loloao.oauth.OAuthSessionManager;
 import com.loloao.service.UserService;
+import com.loloao.utils.UserUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -117,6 +118,9 @@ public class AuthController {
     @PostMapping("/upload")
     @RequiresAuthentication
     public Result upload(HttpServletRequest request, MultipartFile image) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
 
         Result r = new Result();
 

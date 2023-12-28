@@ -5,6 +5,7 @@ import com.loloao.common.Result;
 import com.loloao.entity.Tag;
 import com.loloao.enums.ResultCode;
 import com.loloao.service.TagService;
+import com.loloao.utils.UserUtils;
 import com.loloao.vo.TagVO;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.validation.annotation.Validated;
@@ -87,6 +88,9 @@ public class TagController {
     @PostMapping("/create")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result saveTag(@Validated @RequestBody Tag tag) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
 
         Integer tagId = tagService.saveTag(tag);
 
@@ -98,6 +102,9 @@ public class TagController {
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result updateTag(@RequestBody Tag tag) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result r = new Result();
 
         if (null == tag.getId()) {
@@ -115,6 +122,9 @@ public class TagController {
     @GetMapping("/delete/{id}")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result deleteTagById(@PathVariable("id") Integer id) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result r = new Result();
 
         if (null == id) {

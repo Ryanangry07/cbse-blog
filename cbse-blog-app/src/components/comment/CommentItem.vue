@@ -130,7 +130,7 @@
           parent: {
             id: this.comment.id
           },
-          toUser: {},
+          toUser: '',
           content: ''
         }
       }

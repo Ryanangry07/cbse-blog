@@ -12,6 +12,7 @@ import com.loloao.mapper.UserMapper;
 import com.loloao.service.CommentService;
 import com.loloao.utils.UserUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -85,6 +86,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             comment.setChildrens(children);
             // if t0_uid not null, fill toUser
             for(Comment child: children){
+                User childAuthor = userMapper.selectById(child.getAuthorId());
+                child.setAuthor(childAuthor);
                 if(ObjectUtils.isNotEmpty(child.getToUid())){
                     User toUser = userMapper.selectById(comment.getAuthorId());
                     child.setToUser(toUser);
@@ -148,6 +151,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
     @Override
+    @Transactional
     public Comment saveCommentAndChangeCounts(Comment comment) {
         // article count + 1
         Article article = articleMapper.selectById(comment.getArticle().getId());

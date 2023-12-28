@@ -26,19 +26,29 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();  
-       /* filterChainDefinitionMap.put("/", "anon");  
+        filterChainDefinitionMap.put("/", "anon");
 
+        /*
         filterChainDefinitionMap.put("/static/**", "anon"); 
         filterChainDefinitionMap.put("/blogFile/**", "anon");
         filterChainDefinitionMap.put("/login", "anon"); 
-        filterChainDefinitionMap.put("/register", "anon"); 
-        filterChainDefinitionMap.put("/**", "authc"); */
+        filterChainDefinitionMap.put("/register", "anon");
+        filterChainDefinitionMap.put("/users/currentUser", "anon");
+        filterChainDefinitionMap.put("/tags", "anon");
+        filterChainDefinitionMap.put("/categorys", "anon");
+        filterChainDefinitionMap.put("/star", "anon");
+        filterChainDefinitionMap.put("/star/loadStar", "anon");
+        filterChainDefinitionMap.put("/comments/article/**", "anon");
+        filterChainDefinitionMap.put("/articles", "anon");
+        filterChainDefinitionMap.put("/articles/*", "anon");
+        filterChainDefinitionMap.put("/articles/view/**", "anon");
+        filterChainDefinitionMap.put("/articles/listArchives", "anon");
+        filterChainDefinitionMap.put("/**", "authc");*/
 
         //filterChainDefinitionMap.put("/**/create", "authc");
         //filterChainDefinitionMap.put("/**/update", "authc");
         //filterChainDefinitionMap.put("/**/delete", "authc");
         //filterChainDefinitionMap.put("/upload", "authc");
-        //filterChainDefinitionMap.put("/users/currentUser", "authc");
 
         filterChainDefinitionMap.put("/**", "anon");
 

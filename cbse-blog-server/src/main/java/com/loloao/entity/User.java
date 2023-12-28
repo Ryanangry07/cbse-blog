@@ -4,6 +4,7 @@ import java.util.Date;
 
 import java.io.Serializable;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +33,8 @@ public class User implements Serializable {
     
     private String avatar;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JSONField(format = "yyyy.MM.dd HH:mm")
     private Date createDate;
     
     private String deleted;

@@ -34,6 +34,7 @@
               icon="el-icon-edit">编辑</el-button>
             <!--              v-if="this.article.author.id == this.$store.state.id"-->
             <el-button
+              v-if="this.article.author.id == this.$store.state.id"
               @click="deleteArticle()"
               style="position: absolute;left: 60%;"
               size="mini"
@@ -123,7 +124,7 @@
 <script>
   import MarkdownEditor from '@/components/markdown/MarkdownEditor'
   import CommmentItem from '@/components/comment/CommentItem'
-  import {viewArticle, starArticle, loadStar} from '@/api/article'
+  import {viewArticle, starArticle, loadStar, deleteArticleById} from '@/api/article'
   import {getCommentsByArticle, publishComment} from '@/api/comment'
 
   import default_avatar from '@/assets/img/default_avatar.png'
@@ -145,7 +146,7 @@
           commentCounts: 0,
           viewCounts: 0,
           starCounts: 0,
-          starStatus: 'el-icon-star-on',
+          starStatus: 'el-icon-star-off',
           summary: '',
           author: {},
           tags: [],
@@ -186,7 +187,31 @@
         this.$router.push({path: `/write/${this.article.id}`})
       },
       deleteArticle() {
-        //this.$router.push({path: `/write/${this.article.id}`})
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let that = this
+          deleteArticleById(that.article.id)
+          that.$message({
+            type: 'success',
+            message: 'Delete successfully!'
+          });
+          that.$router.push({ path: '/' })
+            .then(() => {
+              // After the navigation is complete, refresh the browser
+              window.location.reload();
+            })
+            .catch(error => {
+              console.error('Navigation failed:', error);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Delete canceled'
+          });
+        });
       },
       getArticle() {
         let that = this

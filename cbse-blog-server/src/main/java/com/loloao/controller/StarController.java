@@ -3,7 +3,9 @@ package com.loloao.controller;
 import com.loloao.common.Base;
 import com.loloao.common.Result;
 import com.loloao.entity.Star;
+import com.loloao.enums.ResultCode;
 import com.loloao.service.StarService;
+import com.loloao.utils.UserUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,9 @@ public class StarController {
 
     @GetMapping()
     public Result star(Star star){
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Map<String, Object> result = starService.starArticle(star);
         return Result.success(result);
     }

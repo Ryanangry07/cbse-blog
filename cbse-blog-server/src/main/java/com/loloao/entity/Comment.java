@@ -5,6 +5,7 @@ import java.util.Date;
 import java.io.Serializable;
 import java.util.List;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,8 @@ public class Comment  {
     
     private String content;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JSONField(format = "yyyy.MM.dd HH:mm")
     private Date createDate;
     
     private Long articleId;

@@ -7,6 +7,7 @@ import com.loloao.common.Result;
 import com.loloao.entity.Category;
 import com.loloao.enums.ResultCode;
 import com.loloao.service.CategoryService;
+import com.loloao.utils.UserUtils;
 import com.loloao.vo.CategoryVO;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,9 @@ public class CategoryController {
     @PostMapping("/create")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result saveCategory(@Validated @RequestBody Category category) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
 
         Integer categoryId = categoryService.saveCategory(category);
 
@@ -93,6 +97,9 @@ public class CategoryController {
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result updateCategory(@RequestBody Category category) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result result = new Result();
 
         if (null == category.getId()) {
@@ -110,6 +117,9 @@ public class CategoryController {
     @GetMapping("/delete/{id}")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result deleteCategoryById(@PathVariable("id") Integer id) {
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
         Result result = new Result();
 
         if (null == id) {

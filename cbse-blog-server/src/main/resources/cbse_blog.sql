@@ -34,13 +34,7 @@ create table `me_article` (
                               `author_id` bigint(20) default null,
                               `body_id` bigint(20) default null,
                               `category_id` int(11) default null,
-                              primary key (`id`),
-                              key `FKndx2m69302cso79y66yxiju4h` (`author_id`),
-                              key `FKrd11pjsmueckfrh9gs7bc6374` (`body_id`),
-                              key `FKjrn3ua4xmiulp8raj7m9d2xk6` (`category_id`),
-                              constraint `FKjrn3ua4xmiulp8raj7m9d2xk6` foreign key (`category_id`) references `me_category` (`id`),
-                              constraint `FKndx2m69302cso79y66yxiju4h` foreign key (`author_id`) references `sys_user` (`id`),
-                              constraint `FKrd11pjsmueckfrh9gs7bc6374` foreign key (`body_id`) references `me_article_body` (`id`)
+                              primary key (`id`)
 ) engine=innodb auto_increment=25 default charset=utf8;
 
 -- ----------------------------
@@ -60,11 +54,7 @@ create table `me_article_body` (
 drop table if exists `me_article_tag`;
 create table `me_article_tag` (
                                   `article_id` int(11) not null,
-                                  `tag_id` int(11) not null,
-                                  key `FK2s65pu9coxh7w16s8jycih79w` (`tag_id`),
-                                  key `FKsmysra6pt3ehcvts18q2h4409` (`article_id`),
-                                  constraint `FK2s65pu9coxh7w16s8jycih79w` foreign key (`tag_id`) references `me_tag` (`id`),
-                                  constraint `FKsmysra6pt3ehcvts18q2h4409` foreign key (`article_id`) references `me_article` (`id`)
+                                  `tag_id` int(11) not null
 ) engine=innodb default charset=utf8;
 
 -- ----------------------------
@@ -92,15 +82,7 @@ create table `me_comment` (
                               `parent_id` int(11) default null,
                               `to_uid` bigint(20) default null,
                               `level` varchar(1) default null,
-                              primary key (`id`),
-                              key `FKecq0fuo9k0lnmea6r01vfhiok` (`article_id`),
-                              key `FKkvuyh6ih7dt1rfqhwsjomsa6i` (`author_id`),
-                              key `FKaecafrcorkhyyp1luffinsfqs` (`parent_id`),
-                              key `FK73dgr23lbs3ebex5qvqyku308` (`to_uid`),
-                              constraint `FK73dgr23lbs3ebex5qvqyku308` foreign key (`to_uid`) references `sys_user` (`id`),
-                              constraint `FKaecafrcorkhyyp1luffinsfqs` foreign key (`parent_id`) references `me_comment` (`id`),
-                              constraint `FKecq0fuo9k0lnmea6r01vfhiok` foreign key (`article_id`) references `me_article` (`id`),
-                              constraint `FKkvuyh6ih7dt1rfqhwsjomsa6i` foreign key (`author_id`) references `sys_user` (`id`)
+                              primary key (`id`)
 ) engine=innodb auto_increment=53 default charset=utf8;
 
 -- ----------------------------

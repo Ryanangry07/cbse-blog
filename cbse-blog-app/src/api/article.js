@@ -19,6 +19,13 @@ export function getArticles(query, page) {
   })
 }
 
+export function deleteArticleById(articleId) {
+  return request({
+    url: `/articles/delete/${articleId}`,
+    method: 'get'
+  })
+}
+
 export function starArticle(articleId, userId) {
   return request({
     url: '/star',

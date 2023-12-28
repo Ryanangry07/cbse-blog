@@ -31,7 +31,7 @@ public interface ArticleService extends IService<Article> {
 
     Long updateArticle(Article article);
 
-    void deleteArticleById(Integer id);
+    void deleteArticleById(Long id);
 
     List<Article> listArticlesByTag(Integer id);
 

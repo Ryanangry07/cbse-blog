@@ -7,13 +7,16 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.loloao.common.Result;
 import com.loloao.entity.*;
+import com.loloao.enums.ResultCode;
 import com.loloao.mapper.*;
 import com.loloao.service.ArticleService;
 import com.loloao.utils.UserUtils;
 import com.loloao.vo.ArticleVo;
 import com.loloao.vo.PageVo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -46,6 +49,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     public ArticleTagMapper articleTagMapper;
+
+    @Resource
+    public StarMapper starMapper;
+
+    @Resource
+    public CommentMapper commentMapper;
 
     @Override
     public List<Article> listArticles(PageVo pageVo) {
@@ -195,7 +204,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public Article getArticleById(Integer id) {
-        return articleMapper.selectById(id);
+        Article article = articleMapper.selectById(id);
+        // fill author, category, body by id
+        article = fillAuthorCategoryBodyTagsById(article);
+        return article;
     }
 
     @Override
@@ -208,6 +220,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
+    @Transactional
     public Long saveArticle(Article article) {
 
         // fill in properties
@@ -243,6 +256,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
+    @Transactional
     public Long updateArticle(Article article) {
         Article oldArticle = articleMapper.selectById(article.getId());
 
@@ -279,8 +293,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public void deleteArticleById(Integer id) {
-
+    @Transactional
+    public void deleteArticleById(Long id) {
+        //delete article-tag relationships
+        articleTagMapper.delete(new LambdaQueryWrapper<ArticleTag>().eq(ArticleTag::getArticleId, id));
+        //delete star (article-user)
+        starMapper.delete(new LambdaQueryWrapper<Star>().eq(Star::getArticleId, id));
+        //delete article comments
+        commentMapper.delete(new LambdaQueryWrapper<Comment>().eq(Comment::getArticleId, id));
+        //delete article body
+        Article delArticle = articleMapper.selectById(id);
+        articleBodyMapper.delete(new LambdaQueryWrapper<ArticleBody>().eq(ArticleBody::getId, delArticle.getBodyId()));
+        //delete article
+        articleMapper.deleteById(id);
     }
 
     @Override

@@ -27,6 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/users")
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
@@ -65,6 +66,9 @@ public class UserController {
         Result result = new Result();
 
         User currentUser = UserUtils.getCurrentUser();
+        if(currentUser == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
 
         result.setResultCode(ResultCode.SUCCESS);
         result.setData(currentUser);

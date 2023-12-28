@@ -174,8 +174,8 @@
           return
         }
 
-        if (this.articleForm.title.length > 30) {
-          this.$message({message: '标题不能大于30个字符', type: 'warning', showClose: true})
+        if (this.articleForm.title.length > 20) {
+          this.$message({message: 'title no more than 20 characters', type: 'warning', showClose: true})
           return
         }
 

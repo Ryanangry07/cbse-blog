@@ -700,7 +700,63 @@ Response:
 
 ### API 修改文章
 
+GET http://localhost:8888/articles/26
+
+```
+Response:
+{
+	"code":0,
+	"data":{
+		"author":{
+			"account":"ryan",
+			"admin":true,
+			"avatar":"/static/user/user_6.png",
+			"deleted":false,
+			"email":"",
+			"id":18,
+			"mobilePhoneNumber":"",
+			"nickname":"ryan",
+			"password":"af8d7cdcb19c5735a62fc5cccd3cb136",
+			"salt":"7332b0f57f181667399ceb63df17fa76",
+			"status":"normal"
+		},
+		"body":{
+			"content":"this is a ~~new~~ (updated) article from ryan",
+			"id":41
+		},
+		"category":{
+			"avatar":"/category/back.png",
+			"categoryname":"后端",
+			"description":"",
+			"id":2
+		},
+		"commentCounts":0,
+		"createDate":"2023.12.27 05:06",
+		"id":26,
+		"summary":"same, that's all",
+		"tags":[
+			{
+				"avatar":"/tag/java.png",
+				"id":1,
+				"tagname":"Java"
+			}
+		],
+		"title":"new article from ryan",
+		"viewCounts":9,
+		"weight":0
+	},
+	"msg":"成功"
+}
+```
+
+
+
 POST http://localhost:8888/articles/publish
+
+```
+发布新文章时 id=""
+修改文章后再发布时携带 id="xx"
+```
 
 ```
 Payload:
@@ -718,8 +774,8 @@ Payload:
 		{"id":1}
 	],
 	"body":{
-		"content":"this is a ~~new~~ (updated) article from ryan",
-		"contentHtml":"<p>this is a <s>new</s> (updated) article from ryan</p>\n"
+		"content":"this is a ~~new~~ (updated) article from ryan na",
+		"contentHtml":"<p>this is a <s>new</s> (updated) article from ryan na</p>\n"
 	}
 }
 
