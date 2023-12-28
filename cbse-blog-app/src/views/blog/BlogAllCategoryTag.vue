@@ -4,6 +4,18 @@
       <el-main>
         <el-tabs v-model="activeName">
           <el-tab-pane label="文章分类" name="category">
+
+
+
+            <el-input v-model="categoryKeyword" placeholder="Please enter to search" suffix-icon="el-icon-search"
+                      style="margin-right: 7px; width: 60%; margin: 10px 10px 50px 5px" @keyup.enter.native="getCategorys"></el-input>
+            <!--      @keyup.enter.native="loadList" -->
+
+            <el-button size="medium" type="primary" style="" @click="getCategorys">Search</el-button>
+            <el-button size="medium" type="primary" @click="createCategory">Creat New</el-button>
+
+            <el-divider></el-divider>
+
             <ul class="me-allct-items">
               <li v-for="c in categorys" @click="view(c.id)" :key="c.id" class="me-allct-item">
                 <div class="me-allct-content">
@@ -20,7 +32,22 @@
               </li>
             </ul>
           </el-tab-pane>
+
+
+
+
           <el-tab-pane label="标签" name="tag">
+
+
+            <el-input v-model="tagKeyword" placeholder="Please enter to search" suffix-icon="el-icon-search"
+                      style="margin-right: 7px; width: 60%; margin: 10px 10px 50px 5px" @keyup.enter.native="getTags"></el-input>
+            <!--      @keyup.enter.native="loadList" -->
+
+            <el-button size="medium" type="primary" style="" @click="getTags">Search</el-button>
+            <el-button size="medium" type="primary" @click="createTag">Creat New</el-button>
+
+            <el-divider></el-divider>
+
             <ul class="me-allct-items">
               <li v-for="t in tags" @click="view(t.id)" :key="t.id" class="me-allct-item">
                 <div class="me-allct-content">
@@ -38,14 +65,76 @@
           </el-tab-pane>
         </el-tabs>
       </el-main>
+      <el-dialog
+        title="Create New Category"
+        :visible.sync="categoryDialogVisible"
+        width="30%"
+        center>
+        <el-form ref="categoryForm" :rules="categoryRules" :model="categoryForm" label-width="120px" style="padding-right: 20px">
+
+          <el-form-item label="Category Name" prop="categoryname">
+            <el-col :span="20">
+              <el-input v-model="categoryForm.categoryname"></el-input>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="Avatar" prop="avatar">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:8080/upload"
+              name="uploadAvatar"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="categoryDialogVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="saveCategoryForm">Confirm</el-button>
+        </span>
+      </el-dialog>
+
+      <el-dialog
+        title="Create New Tag"
+        :visible.sync="tagDialogVisible"
+        width="30%"
+        center>
+        <el-form ref="tagForm" :rules="tagRules" :model="tagForm" label-width="120px" style="padding-right: 20px">
+
+          <el-form-item label="Tag Name" prop="tagname">
+            <el-col :span="20">
+              <el-input v-model="tagForm.tagname"></el-input>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="Avatar" prop="avatar">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:8080/upload"
+              name="uploadAvatar"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="tagDialogVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="saveTagForm">Confirm</el-button>
+        </span>
+      </el-dialog>
     </el-container>
   </div>
 </template>
 
 <script>
   import defaultAvatar from '@/assets/img/logo.png'
-  import {getAllCategorysDetail} from '@/api/category'
-  import {getAllTagsDetail} from '@/api/tag'
+  import {getAllCategorysDetail, saveCategory, searchCategorys} from '@/api/category'
+  import {getAllTagsDetail, saveTag, searchTags} from '@/api/tag'
+  // import {saveCategory, searchCategorys} from "../../api/category";
 
   export default {
     name: 'BlogAllCategoryTag',
@@ -55,9 +144,34 @@
     },
     data() {
       return {
-        defaultAvatar:defaultAvatar,
+        imageUrl: '',
+        defaultAvatar: defaultAvatar,
         categorys: [],
         tags: [],
+        categoryKeyword: '',
+        tagKeyword: '',
+        categoryDialogVisible: false,
+        tagDialogVisible: false,
+        categoryForm: {
+          id: '',
+          categoryname: '',
+          avatar: ''
+        },
+        tagForm: {
+          id: '',
+          tagname: '',
+          avatar: ''
+        },
+        categoryRules: {
+          categoryname: [
+            {required: true, message: 'Please enter category name', trigger: 'blur'}
+          ]
+        },
+        tagRules: {
+          tagname: [
+            {required: true, message: 'Please enter tag name', trigger: 'blur'}
+          ]
+        },
         currentActiveName: 'category'
       }
     },
@@ -84,7 +198,7 @@
       },
       getCategorys() {
         let that = this
-        getAllCategorysDetail().then(data => {
+        getAllCategorysDetail(that.categoryKeyword).then(data => {
           that.categorys = data.data
         }).catch(error => {
           if (error !== 'error') {
@@ -94,13 +208,146 @@
       },
       getTags() {
         let that = this
-        getAllTagsDetail().then(data => {
+        getAllTagsDetail(that.tagKeyword).then(data => {
           that.tags = data.data
         }).catch(error => {
           if (error !== 'error') {
             that.$message({type: 'error', message: '标签加载失败', showClose: true})
           }
         })
+      },
+      saveCategoryForm(){
+        // check form input by using 'rules[]'
+        this.$refs.categoryForm.validate((valid) => {
+          // if valid, then send request
+          if (valid) {
+            this.saveCategory();
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      saveTagForm(){
+        // check form input by using 'rules[]'
+        this.$refs.tagForm.validate((valid) => {
+          // if valid, then send request
+          if (valid) {
+            this.saveTag();
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      saveCategory(){
+        let that = this
+        if(that.imageUrl == null){
+          that.imageUrl = '/category/lift.jpg' //default
+        }
+        saveCategory(that.imageUrl, that.categoryForm.categoryname).then(res => {
+          console.log(res)
+          this.categoryDialogVisible = false;
+          this.$message({
+            showClose: true,
+            message: 'Congrats, create category successfully.',
+            type: 'success'
+          });
+          this.getCategorys()
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'create category failed', showClose: true})
+          }
+        })
+      },
+      saveTag(){
+        let that = this
+        if(that.imageUrl == null){
+          that.imageUrl = '/category/lift.jpg' //default
+        }
+        saveTag(that.imageUrl, that.tagForm.tagname).then(res => {
+          console.log(res)
+          this.tagDialogVisible = false;
+          this.$message({
+            showClose: true,
+            message: 'Congrats, create tag successfully.',
+            type: 'success'
+          });
+          this.getTags()
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'create tag failed', showClose: true})
+          }
+        })
+      },
+      /*searchCategorys(){
+        let that = this
+        searchCategorys().then(res => {
+          console.log(res)
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'star failed', showClose: true})
+          }
+        })
+      },
+      searchTags(){
+        let that = this
+        searchTags().then(res => {
+          console.log(res)
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'star failed', showClose: true})
+          }
+        })
+      },*/
+      createCategory(){
+        this.categoryDialogVisible = true;
+        //this.resetForm();
+        this.$nextTick(() => {
+          this.resetCategoryForm();
+        });
+        this.categoryForm.id = '';
+      },
+      createTag(){
+        this.tagDialogVisible = true;
+        //this.resetForm();
+        this.$nextTick(() => {
+          this.resetTagForm();
+        });
+        this.tagForm.id = '';
+      },
+      resetCategoryForm() {
+        this.categoryForm.avatar = '';
+        this.$refs.categoryForm.resetFields();
+      },
+      resetTagForm() {
+        this.tagForm.avatar = '';
+        this.$refs.tagForm.resetFields();
+      },
+      // upload
+      handleAvatarSuccess(res, file) {
+        let that = this
+        if(res.code == 0){
+          //this.imageUrl = URL.createObjectURL(file.raw);
+          that.avatar = res.data.url
+          that.imageUrl = res.data.url
+        }else{
+          this.$message.error(`image upload failed:${res.message}`)
+        }
+        console.log(this.imageUrl)
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          //this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        //return isJPG && isLt2M;
+        return isLt2M;
       }
     },
     //组件内的守卫 调整body的背景色
@@ -176,5 +423,29 @@
   .me-allct-meta {
     font-size: 12px;
     color: #969696;
+  }
+
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 90px;
+    height: 90px;
+    line-height: 90px;
+    text-align: center;
+  }
+  .avatar {
+    width: 90px;
+    height: 90px;
+    display: block;
   }
 </style>

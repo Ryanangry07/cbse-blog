@@ -25,7 +25,7 @@ public interface CategoryService extends IService<Category> {
 
     void deleteCategoryById(Integer id);
 
-    List<CategoryVO> findAllDetail();
+    List<CategoryVO> findAllDetail(String keyword);
 
     CategoryVO getCategoryDetail(Integer categoryId);
 

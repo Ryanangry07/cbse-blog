@@ -42,7 +42,7 @@ service.interceptors.response.use(
 
       //20001 用户未登录
       if (res.code === 20001) {
-        console.info("用户未登录")
+        console.info("用户未登录。。")
 
         Message({
           type: 'warning',

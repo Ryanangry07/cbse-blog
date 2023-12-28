@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/Home'
+import {removeToken} from '@/request/token'
 /*import Index from '@/views/Index'
 import Login from '@/views/Login'
 import Register from '@/views/Register'
@@ -89,10 +90,15 @@ router.beforeEach((to, from, next) => {
       if (store.state.account.length === 0) {
         store.dispatch('getUserInfo').then(data => { //获取用户信息
           next()
+          console.log('hahaha')
         }).catch(() => {
+          console.log('heiheihei')
+          removeToken()
+          //this.$router.push({path: '/login'}).then(r => )
           next({path: '/'})
         })
       } else {
+        console.log('lalalal')
         next()
       }
     }

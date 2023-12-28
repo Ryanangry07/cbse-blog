@@ -27,7 +27,7 @@ public interface TagService extends IService<Tag> {
 
     List<Tag> listHotTags(int limit);
 
-    List<TagVO> findAllDetail();
+    List<TagVO> findAllDetail(String keyword);
 
     TagVO getTagDetail(Integer tagId);
 

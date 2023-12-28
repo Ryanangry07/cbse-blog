@@ -11,15 +11,15 @@
       <el-col v-if="!simple" :span="16">
         <el-menu :router=true menu-trigger="click" active-text-color="#5FB878" :default-active="activeIndex"
                  mode="horizontal">
-          <el-menu-item index="/">首页</el-menu-item>
-          <el-menu-item index="/category/all">文章分类</el-menu-item>
-          <el-menu-item index="/tag/all">标签</el-menu-item>
-          <el-menu-item index="/archives">文章归档</el-menu-item>
-          <el-menu-item index="/log">日志</el-menu-item>
-          <el-menu-item index="/messageBoard">留言板</el-menu-item>
+          <el-menu-item index="/">Home</el-menu-item>
+          <el-menu-item index="/category/all">Category and Tag</el-menu-item>
+<!--          <el-menu-item index="/tag/all">标签</el-menu-item>-->
+          <el-menu-item index="/archives">Article Archive</el-menu-item>
+<!--          <el-menu-item index="/log">日志</el-menu-item>-->
+          <el-menu-item index="/messageBoard">Message Board</el-menu-item>
 
           <el-col :span="4" :offset="4">
-            <el-menu-item index="/write"><i class="el-icon-edit"></i>写文章</el-menu-item>
+            <el-menu-item index="/write"><i class="el-icon-edit"></i>Write Article</el-menu-item>
           </el-col>
 
         </el-menu>
@@ -34,10 +34,10 @@
 
           <template v-if="!user.login">
             <el-menu-item index="/login">
-              <el-button type="text">登录</el-button>
+              <el-button type="text">Login</el-button>
             </el-menu-item>
             <el-menu-item index="/register">
-              <el-button type="text">注册</el-button>
+              <el-button type="text">Register</el-button>
             </el-menu-item>
           </template>
 
@@ -46,7 +46,7 @@
               <template slot="title">
                 <img class="me-header-picture" :src="user.avatar"/>
               </template>
-              <el-menu-item index @click="logout"><i class="el-icon-back"></i>退出</el-menu-item>
+              <el-menu-item index @click="logout"><i class="el-icon-back"></i>Logout</el-menu-item>
             </el-submenu>
           </template>
         </el-menu>

@@ -37,8 +37,8 @@ public class TagController {
     }
 
     @GetMapping("detail")
-    public Result listCategorysDetail() {
-        List<TagVO> categorys = tagService.findAllDetail();
+    public Result listCategorysDetail(String keyword) {
+        List<TagVO> categorys = tagService.findAllDetail(keyword);
 
         return Result.success(categorys);
     }

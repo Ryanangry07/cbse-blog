@@ -1,6 +1,7 @@
 package com.loloao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loloao.entity.Category;
 import com.loloao.entity.Tag;
@@ -42,7 +43,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 
     @Override
     public Integer saveTag(Tag tag) {
-        return null;
+        return tagMapper.insert(tag);
     }
 
     @Override
@@ -61,8 +62,10 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     }
 
     @Override
-    public List<TagVO> findAllDetail() {
-        List<Tag> tags = tagMapper.selectList(null);
+    public List<TagVO> findAllDetail(String keyword) {
+        LambdaQueryWrapper<Tag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(keyword), Tag::getTagname, keyword);
+        List<Tag> tags = tagMapper.selectList(wrapper);
         List<TagVO> tagVOS = new ArrayList<>();
         for(Tag tag : tags){
 

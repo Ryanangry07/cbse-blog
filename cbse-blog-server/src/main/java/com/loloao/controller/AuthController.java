@@ -117,10 +117,10 @@ public class AuthController {
 
     @PostMapping("/upload")
     @RequiresAuthentication
-    public Result upload(HttpServletRequest request, MultipartFile image) {
-        if(UserUtils.getCurrentUser() == null){
+    public Result upload(HttpServletRequest request, @RequestParam("uploadAvatar") MultipartFile image) {
+        /*if(UserUtils.getCurrentUser() == null){
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
-        }
+        }*/
 
         Result r = new Result();
 

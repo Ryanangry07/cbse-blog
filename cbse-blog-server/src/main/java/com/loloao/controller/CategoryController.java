@@ -40,8 +40,8 @@ public class CategoryController {
     }
 
     @GetMapping("detail")
-    public Result listCategorysDetail() {
-        List<CategoryVO> categorys = categoryService.findAllDetail();
+    public Result listCategorysDetail(String keyword) {
+        List<CategoryVO> categorys = categoryService.findAllDetail(keyword);
 
         return Result.success(categorys);
     }

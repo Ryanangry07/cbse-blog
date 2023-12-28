@@ -58,6 +58,9 @@ export default new Vuex.Store({
             commit('SET_AVATAR', '')
             commit('SET_ID', '')
             removeToken()
+            /*resolve()
+            console.log("eeeee")
+            this.$router.push({path: '/login'})*/
           }
           resolve(data)
         }).catch(error => {

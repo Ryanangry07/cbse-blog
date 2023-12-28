@@ -1,5 +1,7 @@
 package com.loloao.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loloao.entity.Category;
 import com.loloao.mapper.ArticleMapper;
@@ -39,7 +41,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public Integer saveCategory(Category category) {
-        return null;
+        return categoryMapper.insert(category);
     }
 
     @Override
@@ -53,8 +55,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public List<CategoryVO> findAllDetail() {
-        List<Category> categories = categoryMapper.selectList(null);
+    public List<CategoryVO> findAllDetail(String keyword) {
+
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(keyword), Category::getCategoryname, keyword);
+        List<Category> categories = categoryMapper.selectList(wrapper);
+
+
         List<CategoryVO> categoryVOS = new ArrayList<>();
         for(Category category : categories){
 
