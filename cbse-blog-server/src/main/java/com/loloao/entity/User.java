@@ -52,5 +52,9 @@ public class User implements Serializable {
     private String salt;
     
     private String status;
+
+    private String aboutMe;
+
+    private Boolean aboutMeVisible;
     
 }

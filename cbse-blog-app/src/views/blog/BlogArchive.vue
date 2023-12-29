@@ -59,13 +59,13 @@
     },
     computed: {
       title (){
-        return this.currentArchive + ' - 文章归档 - For Fun'
+        return this.currentArchive + ' - Article Archives - For Fun'
       },
       currentArchive (){
         if(this.article.query.year && this.article.query.month){
-          return `${this.article.query.year}年${this.article.query.month}月`
+          return `${this.article.query.year} - ${this.article.query.month}`
         }
-        return '全部'
+        return 'All Articles'
       }
     },
     methods: {

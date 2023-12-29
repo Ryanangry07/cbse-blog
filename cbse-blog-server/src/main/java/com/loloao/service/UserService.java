@@ -22,7 +22,7 @@ public interface UserService extends IService<User> {
 
     Long saveUser(User user);
 
-    Long updateUser(User user);
+    int updateUser(User user);
 
     void deleteUserById(Long id);
 }

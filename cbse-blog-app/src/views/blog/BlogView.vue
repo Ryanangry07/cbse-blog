@@ -12,10 +12,28 @@
 
         <div class="me-view-card">
           <h1 class="me-view-title">{{article.title}}</h1>
+
           <div class="me-view-author">
-            <a class="">
-              <img class="me-view-picture" :src="article.author.avatar"></img>
+            <a>
+              <img v-popover:popoverA class="me-view-picture" :src="article.author.avatar"></img>
             </a>
+            <el-popover
+              ref="popoverA"
+              placement="bottom"
+              title="About Me"
+              width="200"
+              trigger="click">
+                <template v-if="article.author.aboutMeVisible">
+                  <!-- If aboutMeVisible is true, show user's aboutMe content -->
+                  <div>{{ article.author.aboutMe }}</div>
+                </template>
+                <template v-else>
+                  <!-- If aboutMeVisible is false, show default content -->
+                  <div>This user didn't show anything.</div>
+                </template>
+            </el-popover>
+
+
             <div class="me-view-info">
               <span>{{article.author.nickname}}</span>
               <div class="me-view-meta">
@@ -76,8 +94,23 @@
               <el-row :gutter="20">
                 <el-col :span="2">
                   <a class="">
-                    <img class="me-view-picture" :src="avatar"></img>
+                    <img v-popover:popoverC class="me-view-picture" :src="avatar"></img>
                   </a>
+                  <el-popover
+                    ref="popoverC"
+                    placement="bottom"
+                    title="About Me"
+                    width="200"
+                    trigger="click">
+                    <template v-if="article.author.aboutMeVisible">
+                      <!-- If aboutMeVisible is true, show user's aboutMe content -->
+                      <div>{{ article.author.aboutMe }}</div>
+                    </template>
+                    <template v-else>
+                      <!-- If aboutMeVisible is false, show default content -->
+                      <div>This user didn't show anything.</div>
+                    </template>
+                  </el-popover>
                 </el-col>
                 <el-col :span="22">
                   <el-input
@@ -163,6 +196,10 @@
         comment: {
           article: {},
           content: ''
+        },
+        author: {
+          aboutMeVisible: '',
+          aboutMe: ''
         }
       }
     },

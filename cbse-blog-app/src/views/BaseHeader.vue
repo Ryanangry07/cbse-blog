@@ -42,12 +42,26 @@
           </template>
 
           <template v-else>
-            <el-submenu index>
+            <i style="margin-right: 10px" class="el-icon-message"></i>
+            <el-dropdown trigger="click" placement="top" style="line-height: 60px" @click="handleClick">
+
+              <img class="me-header-picture el-dropdown-link" :src="user.avatar"/>
+
+              <el-dropdown-menu slot="dropdown">
+<!--                <el-dropdown-item @click="logout"><i class="el-icon-user"></i>Profile</el-dropdown-item>
+                <el-dropdown-item @click="logout"><i class="el-icon-back"></i>Logout</el-dropdown-item>-->
+                <el-dropdown-item @click.native="goToProfile">Profile</el-dropdown-item>
+                <el-dropdown-item @click.native="logout">Logout</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+<!--            <el-submenu index>
               <template slot="title">
                 <img class="me-header-picture" :src="user.avatar"/>
               </template>
+              <el-menu-item index @click="logout"><i class="el-icon-user"></i>Profile</el-menu-item>
               <el-menu-item index @click="logout"><i class="el-icon-back"></i>Logout</el-menu-item>
-            </el-submenu>
+            </el-submenu>-->
+            <!--            notification-->
           </template>
         </el-menu>
       </el-col>
@@ -88,12 +102,34 @@
             that.$message({message: error, type: 'error', showClose: true});
           }
         })
+      },
+      goToProfile() {
+        // Use this.$router.push to navigate to the "/profile" route
+        console.log('go to profile')
+        this.$router.push("/profile");
+      },
+      handleClick() {
+        alert('button click');
       }
     }
   }
 </script>
 
 <style>
+
+  .el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
+  }
+  .demonstration {
+    display: block;
+    color: #8492a6;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
 
   .el-header {
     position: fixed;

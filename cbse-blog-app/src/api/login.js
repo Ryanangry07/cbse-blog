@@ -26,6 +26,31 @@ export function getUserInfo() {
   })
 }
 
+export function getUserProfile(userId) {
+  return request({
+    url: `/users/${userId}`,
+    method: 'get'
+  })
+}
+
+export function saveUserProfile(user) {
+  const data = {
+    id: user.id,
+    account: user.account,
+    nickname: user.nickname,
+    avatar: user.avatar, // Set the default avatar URL if available
+    email: user.email,
+    mobilePhoneNumber: user.mobilePhoneNumber,
+    aboutMe: user.aboutMe,
+    aboutMeVisible: user.aboutMeVisible
+  }
+  return request({
+    url: '/users/update',
+    method: 'post',
+    data
+  })
+}
+
 export function register(account, nickname, password) {
   const data = {
     account,

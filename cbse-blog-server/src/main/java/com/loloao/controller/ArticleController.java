@@ -107,7 +107,7 @@ public class ArticleController {
                     @FastJsonFilter(clazz = Article.class, props = {"comments"}),
                     @FastJsonFilter(clazz = ArticleBody.class, props = {"contentHtml"}),
                     @FastJsonFilter(clazz = Tag.class, props = {"avatar"})},
-            include = {@FastJsonFilter(clazz = User.class, props = {"id", "nickname", "avatar"})})
+            include = {@FastJsonFilter(clazz = User.class, props = {"id", "nickname", "avatar", "aboutMe", "aboutMeVisible"})})
     public Result getArticleAndAddViews(@PathVariable("id") Integer id) {
 
         Result result = new Result();

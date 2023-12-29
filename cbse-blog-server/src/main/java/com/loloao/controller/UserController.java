@@ -6,6 +6,7 @@ import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import com.loloao.common.Base;
 import com.loloao.enums.ResultCode;
 import com.loloao.utils.UserUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 
 import com.loloao.common.Result;
@@ -27,7 +28,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/users")
-@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
@@ -58,6 +58,7 @@ public class UserController {
         return result;
     }
 
+    @CrossOrigin
     @GetMapping("/currentUser")
     @FastJsonView(
             include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
@@ -88,18 +89,15 @@ public class UserController {
 
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
-    public Result updateUser(@RequestBody User user) {
+    public Result updateUser(@Validated @RequestBody User user) {
         Result result = new Result();
-
-        if (null == user.getId()) {
+        System.out.println("updateUser ==> " + user.toString());
+        if (null == user.getId() || userService.updateUser(user) == 0) {
             result.setResultCode(ResultCode.USER_NOT_EXIST);
             return result;
         }
 
-        Long userId = userService.updateUser(user);
-
         result.setResultCode(ResultCode.SUCCESS);
-        result.simple().put("userId", userId);
         return result;
     }
 

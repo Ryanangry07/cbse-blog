@@ -61,8 +61,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
-    public Long updateUser(User user) {
-        return null;
+    public int updateUser(User user) {
+        // 默认情况下，mybatis 的 update 操作返回值是记录的 matched 的条数，并不是影响的记录条数。
+        int rows = userMapper.updateById(user);
+        System.out.println("updateUser ==> check rows: " + rows);
+        return rows;
     }
 
     @Override
