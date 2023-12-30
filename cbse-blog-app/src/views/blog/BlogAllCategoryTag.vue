@@ -137,7 +137,7 @@
           label-width="120px"
           style="padding-right: 20px"
         >
-          <el-form-item label="Tag Name" props="tagname">
+          <el-form-item label="Tag Name" prop="tagname">
             <el-col :span="20">
               <el-input v-model="tagForm.tagname"></el-input>
             </el-col>
@@ -281,11 +281,16 @@ export default {
             message: "Please enter category name",
             trigger: "blur",
           },
+          {
+            validator: this.checkUniqueCategoryName,
+            trigger: "blur",
+          },
         ],
       },
       tagRules: {
         tagname: [
           { required: true, message: "Please enter tag name", trigger: "blur" },
+          { validator: this.checkUniqueTagName, trigger: "blur" },
         ],
       },
       mergeCategoryRules: {
@@ -294,6 +299,7 @@ export default {
         ],
         mergedcategoryname: [
           { required: true, message: "Please enter a new category name to assign to", trigger: "blur" },
+          { validator: this.checkUniqueCategoryName, trigger: "blur" },
         ],
       },
       mergeTagRules: {
@@ -302,6 +308,7 @@ export default {
         ],
         mergedtagname: [
           { required: true, message: "Please enter a new tag name to assign to", trigger: "blur" },
+          { validator: this.checkUniqueTagName, trigger: "blur" },
         ],
       },
       currentActiveName: "category",
@@ -599,6 +606,26 @@ export default {
       }
       //return isJPG && isLt2M;
       return isLt2M;
+    },
+    checkUniqueCategoryName(rule, value, callback) {
+      // Retrieve category names from categorys array
+      const existingCategoryNames = this.categorys.map((category) => category.categoryname);
+
+      // Check if the entered value already exists in the existingCategoryNames array
+      if (existingCategoryNames.includes(value)) {
+        callback(new Error("Category name already exists"));
+      } else {
+        callback();
+      }
+    },
+    checkUniqueTagName(rule, value, callback) {
+      const existingTagNames = this.tags.map((tag) => tag.tagname);
+
+      if (existingTagNames.includes(value)) {
+        callback(new Error("Tag name already exists"));
+      } else {
+        callback();
+      }
     },
   },
   //组件内的守卫 调整body的背景色
