@@ -1,6 +1,5 @@
 package com.loloao.controller;
 
-
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
 import com.loloao.common.Base;
@@ -60,14 +59,14 @@ public class UserController {
 
     @CrossOrigin
     @GetMapping("/currentUser")
-    @FastJsonView(
-            include = {@FastJsonFilter(clazz = User.class, props = {"id", "account", "nickname", "avatar"})})
+    @FastJsonView(include = {
+            @FastJsonFilter(clazz = User.class, props = { "id", "account", "nickname", "avatar", "admin" }) })
     public Result getCurrentUser(HttpServletRequest request) {
 
         Result result = new Result();
 
         User currentUser = UserUtils.getCurrentUser();
-        if(currentUser == null){
+        if (currentUser == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
 
@@ -117,6 +116,4 @@ public class UserController {
         return result;
     }
 
-
 }
-

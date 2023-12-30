@@ -67,3 +67,15 @@ export function searchTags(query, page) {
     }
   })
 }
+
+export function mergeTag(oldIDLists, newName) {
+  const data = {
+    oldIDLists,
+    newName
+  }
+  return request({
+    url: '/tags/merge',
+    method: 'post',
+    data
+  })
+}

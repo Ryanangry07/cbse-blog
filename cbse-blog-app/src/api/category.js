@@ -62,3 +62,14 @@ export function searchCategorys(query, page) {
   })
 }
 
+export function mergeCategory(oldIDLists, newName) {
+  const data = {
+    oldIDLists,
+    newName
+  }
+  return request({
+    url: '/categorys/merge',
+    method: 'post',
+    data
+  })
+}

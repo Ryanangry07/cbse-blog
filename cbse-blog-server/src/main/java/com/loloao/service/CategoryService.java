@@ -6,7 +6,6 @@ import com.loloao.vo.CategoryVO;
 
 import java.util.List;
 
-
 /**
  * (Category)表服务接口
  *
@@ -23,7 +22,9 @@ public interface CategoryService extends IService<Category> {
 
     Integer updateCategory(Category category);
 
-    void deleteCategoryById(Integer id);
+    void deleteCategoryById(String id);
+
+    Integer mergeCategory(String[] oldCategories, String newCategoryName);
 
     List<CategoryVO> findAllDetail(String keyword);
 

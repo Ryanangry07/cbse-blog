@@ -11,6 +11,7 @@ export default new Vuex.Store({
     account: '',
     name: '',
     avatar: '',
+    admin: '',
     token: getToken(),
   },
   mutations: {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
     },
     SET_ID: (state, id) => {
       state.id = id
+    },
+    SET_ADMIN: (state, admin) => {
+      state.admin = admin
     }
   },
   actions: {
@@ -52,11 +56,13 @@ export default new Vuex.Store({
             commit('SET_NAME', data.data.nickname)
             commit('SET_AVATAR', data.data.avatar)
             commit('SET_ID', data.data.id)
+            commit('SET_ADMIN', data.data.admin)
           } else {
             commit('SET_ACCOUNT', '')
             commit('SET_NAME', '')
             commit('SET_AVATAR', '')
             commit('SET_ID', '')
+            commit('SET_ADMIN', '')
             removeToken()
             /*resolve()
             console.log("eeeee")
@@ -78,6 +84,7 @@ export default new Vuex.Store({
           commit('SET_NAME', '')
           commit('SET_AVATAR', '')
           commit('SET_ID', '')
+          commit('SET_ADMIN', '')
           removeToken()
           resolve()
 
@@ -94,6 +101,7 @@ export default new Vuex.Store({
         commit('SET_NAME', '')
         commit('SET_AVATAR', '')
         commit('SET_ID', '')
+        commit('SET_ADMIN', '')
         removeToken()
         resolve()
       }).catch(error => {

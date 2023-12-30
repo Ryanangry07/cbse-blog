@@ -1,10 +1,10 @@
 package com.loloao.controller;
 
-
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.loloao.common.Base;
 import com.loloao.common.Result;
 import com.loloao.entity.Category;
+import com.loloao.entity.MergeRequestDTO;
 import com.loloao.enums.ResultCode;
 import com.loloao.service.CategoryService;
 import com.loloao.utils.UserUtils;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+//here
+import java.util.Map;
 
 /**
  * (Category)表控制层
@@ -34,7 +36,7 @@ public class CategoryController {
 
     @GetMapping
     public Result listCategorys() {
-        //List<Category> categorys = categoryService.findAll();
+        // List<Category> categorys = categoryService.findAll();
 
         return Result.success(categoryService.list());
     }
@@ -83,7 +85,7 @@ public class CategoryController {
     @PostMapping("/create")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result saveCategory(@Validated @RequestBody Category category) {
-        if(UserUtils.getCurrentUser() == null){
+        if (UserUtils.getCurrentUser() == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
 
@@ -97,7 +99,7 @@ public class CategoryController {
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result updateCategory(@RequestBody Category category) {
-        if(UserUtils.getCurrentUser() == null){
+        if (UserUtils.getCurrentUser() == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         Result result = new Result();
@@ -117,7 +119,7 @@ public class CategoryController {
     @GetMapping("/delete/{id}")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result deleteCategoryById(@PathVariable("id") Integer id) {
-        if(UserUtils.getCurrentUser() == null){
+        if (UserUtils.getCurrentUser() == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         Result result = new Result();
@@ -127,11 +129,26 @@ public class CategoryController {
             return result;
         }
 
-        categoryService.deleteCategoryById(id);
+        categoryService.deleteCategoryById(id.toString());
 
         result.setResultCode(ResultCode.SUCCESS);
         return result;
     }
-    
-}
 
+    @PostMapping("/merge")
+    @RequiresRoles(Base.ROLE_ADMIN)
+    public Result mergeCategory(@Validated @RequestBody MergeRequestDTO mergeRequestDTO) {
+        if (UserUtils.getCurrentUser() == null) {
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        Result result = new Result();
+
+        Integer categoryId = categoryService.mergeCategory(mergeRequestDTO.getOldIDLists(),
+                mergeRequestDTO.getNewName());
+
+        result.setResultCode(ResultCode.SUCCESS);
+        result.simple().put("categoryId", categoryId);
+        return result;
+    }
+
+}
