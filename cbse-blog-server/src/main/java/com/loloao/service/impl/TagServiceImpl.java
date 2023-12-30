@@ -54,7 +54,8 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 
     @Override
     public Integer updateTag(Tag tag) {
-        return null;
+        Tag t = new Tag(tag.getId(), tag.getAvatar(), tag.getTagname());
+        return tagMapper.updateById(t);
     }
 
     @Override
@@ -130,6 +131,15 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 
     @Override
     public TagVO getTagDetail(Integer tagId) {
-        return null;
+        Tag tag = tagMapper.selectById(tagId);
+        TagVO tagVO = new TagVO();
+        tagVO.setId(tag.getId());
+        tagVO.setAvatar(tag.getAvatar());
+        tagVO.setTagname(tag.getTagname());
+        // get article counts
+        int articlesCount = articleMapper.getCountArticleByTagId(tag.getId());
+        tagVO.setArticles(articlesCount);
+
+        return tagVO;
     }
 }

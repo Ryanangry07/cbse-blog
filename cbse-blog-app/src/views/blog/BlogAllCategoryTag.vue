@@ -52,7 +52,7 @@
             ></el-input>
             <!--      @keyup.enter.native="loadList" -->
             <el-button size="medium" type="primary" @click="getTags">Search</el-button>
-            <el-button size="medium" type="primary" icon="el-icon-plus" @click="createTag" circle>New</el-button>
+            <el-button v-if="1 == this.$store.state.admin" size="medium" type="primary" icon="el-icon-plus" @click="createTag" circle>New</el-button>
             <el-button v-if="1 == this.$store.state.admin" size="medium" icon="el-icon-edit" type="primary" @click="openMergeTag">Merge</el-button>
 
             <el-divider></el-divider>
@@ -97,9 +97,7 @@
           style="padding-right: 20px"
         >
           <el-form-item label="Category Name" prop="categoryname">
-            <el-col :span="20">
-              <el-input v-model="categoryForm.categoryname"></el-input>
-            </el-col>
+            <el-input v-model="categoryForm.categoryname"></el-input>
           </el-form-item>
           <el-form-item label="Avatar" prop="avatar">
             <el-upload
@@ -113,6 +111,9 @@
               <img v-if="imageUrl" :src="imageUrl" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+          </el-form-item>
+          <el-form-item label="Description" prop="description">
+              <el-input type="textarea" :rows="5" v-model="categoryForm.description"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -266,6 +267,7 @@ export default {
         id: "",
         categoryname: "",
         avatar: "",
+        description: "",
       },
       tagForm: {
         id: "",
@@ -320,10 +322,9 @@ export default {
     },
     categoryTagTitle() {
       if (this.currentActiveName == "category") {
-        return "文章分类 - For Fun";
+        return "Category - For Fun";
       }
-      console.info("dddd");
-      return "标签 - For Fun";
+      return "Tag - For Fun";
     },
   },
   methods: {
@@ -415,7 +416,7 @@ export default {
       if (that.imageUrl == null) {
         that.imageUrl = "/category/lift.jpg"; //default
       }
-      saveCategory(that.imageUrl, that.categoryForm.categoryname)
+      saveCategory(that.imageUrl, that.categoryForm.categoryname, that.categoryForm.description)
         .then((res) => {
           console.log(res);
           this.categoryDialogVisible = false;
@@ -665,7 +666,7 @@ export default {
 .me-allct-description {
   min-height: 50px;
   font-size: 13px;
-  line-height: 25px;
+  padding: 20px;
 }
 
 .me-allct-meta {

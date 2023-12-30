@@ -37,7 +37,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public Category getCategoryById(Integer id) {
-        return null;
+        return categoryMapper.selectById(id);
     }
 
     @Override
@@ -47,7 +47,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public Integer updateCategory(Category category) {
-        return null;
+        Category c = new Category(category.getId(), category.getAvatar(), category.getCategoryname(),
+                category.getDescription());
+        return categoryMapper.updateById(c);
     }
 
     @Override
@@ -100,6 +102,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public CategoryVO getCategoryDetail(Integer categoryId) {
-        return null;
+        Category category = categoryMapper.selectById(categoryId);
+        CategoryVO categoryVO = new CategoryVO();
+        categoryVO.setId(category.getId());
+        categoryVO.setAvatar(category.getAvatar());
+        categoryVO.setDescription(category.getDescription());
+        categoryVO.setCategoryname(category.getCategoryname());
+
+        int articlesCount = articleMapper.getCountArticleByCategoryId(category.getId());
+        categoryVO.setArticles(articlesCount);
+        return categoryVO;
     }
 }

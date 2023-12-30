@@ -79,3 +79,16 @@ export function mergeTag(oldIDLists, newName) {
     data
   })
 }
+
+export function editTag(avatar, tagname, id) {
+  const data = {
+    id,
+    avatar,
+    tagname
+  }
+  return request({
+    url: '/tags/update',
+    method: 'post',
+    data
+  })
+}
