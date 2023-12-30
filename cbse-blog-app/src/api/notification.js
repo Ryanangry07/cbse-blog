@@ -1,9 +1,21 @@
 import request from '@/request'
 
-export function getNotifications(userId) {
+export function getAllNotifications(userId) {
   return request({
     url: `/notifications/${userId}`,
     method: 'get'
+  })
+}
+
+export function getNotifications(userId,pageNum , pageSize) {
+  return request({
+    url: '/notifications',
+    method: 'get',
+    params: {
+      userId: userId,
+      pageSize: pageSize,
+      pageNum: pageNum
+    }
   })
 }
 

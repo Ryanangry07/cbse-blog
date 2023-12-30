@@ -1,8 +1,12 @@
 package com.loloao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.loloao.common.PageParam;
 import com.loloao.entity.Notification;
 import com.loloao.entity.User;
 import com.loloao.mapper.NotificationMapper;
@@ -24,10 +28,31 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     public UserMapper userMapper;
 
     @Override
-    public List<Notification> getNotificationsByUserId(Long userId) {
-        LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Notification::getUid, userId);
-        wrapper.orderByDesc(Notification::getCreateDate);
+    public Page<Notification> getNotificationsByPage(PageParam pageParam) {
+        // get param
+        String keyword = (String) pageParam.getData().get("keyword");
+        Page<Notification> page = new Page<>(pageParam.getPageNum(), pageParam.getPageSize());
+
+        QueryWrapper<Notification> wrapper = new QueryWrapper<>();
+        wrapper.eq("uid", pageParam.getUserId());
+        wrapper.orderByDesc("create_date");
+        // query condition
+        if(StringUtils.isNotBlank(keyword)){
+            wrapper.like("CONCAT(title, content)", keyword);
+        }
+        return notificationMapper.selectPage(page, wrapper);
+    }
+
+    @Override
+    public List<Notification> getAllNotificationsByUserId(Long userId) {
+
+        QueryWrapper<Notification> wrapper = new QueryWrapper<>();
+        wrapper.eq("uid", userId);
+        wrapper.orderByDesc("create_date");
+        // query condition
+        /*if(StringUtils.isNotBlank(keyword)){
+            wrapper.like("CONCAT(title, content)", keyword);
+        }*/
         return notificationMapper.selectList(wrapper);
     }
 
@@ -56,6 +81,11 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     }
 
     @Override
+    public void deleteById(Long notificationId) {
+        notificationMapper.deleteById(notificationId);
+    }
+
+    @Override
     public void addNotification(Notification notification) {
         notificationMapper.insert(notification);
     }
@@ -76,6 +106,27 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         UpdateWrapper<User> userWrapper = new UpdateWrapper<>();
         userWrapper.eq("id", user.getId());
         int newCounts = user.getUnreadCounts() - 1;
+        userWrapper.set("unread_counts", (newCounts < 0) ? 0 : newCounts);
+        userMapper.update(null, userWrapper);
+
+    }
+
+    @Override
+    public void markAsUnread(Long id) {
+
+        Notification notification = notificationMapper.selectById(id);
+
+        //update notification read_status to false (unread)
+        UpdateWrapper<Notification> wrapper = new UpdateWrapper<>();
+        wrapper.eq("id", id);
+        wrapper.set("read_status", false);
+        notificationMapper.update(null, wrapper);
+
+        //update user read_counts + 1 (one more notification unread)
+        User user = userMapper.selectById(notification.getUid());
+        UpdateWrapper<User> userWrapper = new UpdateWrapper<>();
+        userWrapper.eq("id", user.getId());
+        int newCounts = user.getUnreadCounts() + 1;
         userWrapper.set("unread_counts", (newCounts < 0) ? 0 : newCounts);
         userMapper.update(null, userWrapper);
 

@@ -6,41 +6,72 @@
         <div>
           <span style="margin-left: 10px">All Notifications</span>
           <el-collapse v-model="activeName" @change="handleChange" accordion>
-            <el-collapse-item v-for="notification in notificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
+            <el-collapse-item v-for="notification in pageFullNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
                   <i class="el-icon-bell right-3 item"></i>
                 </el-badge>
-                {{notification.title}}
+<!--                <span v-if="notification.readStatus">{{notification.title}}</span>-->
+                <span :style="{ 'font-weight': notification.readStatus ? 'normal' : 'bold' }">{{ notification.title }}</span>
+                <div style="float: right">{{notification.createDate}}</div>
               </template>
-              <div>Datetime: {{notification.createDate}}</div>
+              <div><b>Datetime</b>: {{notification.createDate}}</div>
 
-              <div v-if="notification.fromUser">From account: {{notification.fromUser}}</div>
-              <div v-else>From: System</div>
+              <div v-if="notification.fromUser"><b>From account</b>: {{notification.fromUser}}</div>
+              <div v-else><b>From</b>: System</div>
 
-              <div>Content: {{notification.content}}</div>
+              <div><b>Content</b>: {{notification.content}}</div>
+              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
+
+          <el-pagination
+            @size-change="handleAllSizeChange"
+            @current-change="handleAllCurrentChange"
+            :current-page="pageNumAll"
+            :page-sizes="[5, 10, 20, 30]"
+            :page-size="pageSizeAll"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalAll"
+            style="margin-left: 25%; margin-top: 10px">
+          </el-pagination>
         </div>
       </el-tab-pane>
 
       <el-tab-pane label="Unread Notifications">
         <div>
-          <span style="margin-left: 10px">Unread Notifications</span>
+          <span style="margin-left: 10px">All Notifications</span>
           <el-collapse v-model="activeName" @change="handleChange" accordion>
-            <el-collapse-item v-for="notification in unreadNotifications" :key="notification.id" :name="notification.id" style="margin-left: 15px">
+            <el-collapse-item v-for="notification in pageUnreadNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
                   <i class="el-icon-bell right-3 item"></i>
                 </el-badge>
-                {{notification.title}}
+                <span :style="{ 'font-weight': notification.readStatus ? 'normal' : 'bold' }">{{ notification.title }}</span>
+                <div style="float: right">{{notification.createDate}}</div>
               </template>
-              <div>Datetime: {{notification.createDate}}</div>
-              <div v-if="notification.fromUser">From account: {{notification.fromUser}}</div>
-              <div v-else>From: System</div>
-              <div>Content: {{notification.content}}</div>
+              <div><b>Datetime</b>: {{notification.createDate}}</div>
+
+              <div v-if="notification.fromUser"><b>From account</b>: {{notification.fromUser}}</div>
+              <div v-else><b>From</b>: System</div>
+
+              <div><b>Content</b>: {{notification.content}}</div>
+              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
+
+          <el-pagination
+            @size-change="handleUnreadSizeChange"
+            @current-change="handleUnreadCurrentChange"
+            :current-page="pageNumUnread"
+            :page-sizes="[5, 10, 20, 30]"
+            :page-size="pageSizeUnread"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalUnread"
+            style="margin-left: 25%; margin-top: 10px">
+          </el-pagination>
         </div>
       </el-tab-pane>
 
@@ -48,19 +79,36 @@
         <div>
           <span style="margin-left: 10px">@me Notifications</span>
           <el-collapse v-model="activeName" @change="handleChange" accordion>
-            <el-collapse-item v-for="notification in atMeNotifications" :key="notification.id" :name="notification.id" style="margin-left: 15px">
+            <el-collapse-item v-for="notification in pageAtMeNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
                   <i class="el-icon-bell right-3 item"></i>
                 </el-badge>
-                {{notification.title}}
+                <!--                <span v-if="notification.readStatus">{{notification.title}}</span>-->
+                <span :style="{ 'font-weight': notification.readStatus ? 'normal' : 'bold' }">{{ notification.title }}</span>
+                <div style="float: right">{{notification.createDate}}</div>
               </template>
-              <div>Datetime: {{notification.createDate}}</div>
-              <div v-if="notification.fromUser">From account: {{notification.fromUser}}</div>
-              <div v-else>From: System</div>
-              <div>Content: {{notification.content}}</div>
+              <div><b>Datetime</b>: {{notification.createDate}}</div>
+
+              <div v-if="notification.fromUser"><b>From account</b>: {{notification.fromUser}}</div>
+              <div v-else><b>From</b>: System</div>
+
+              <div><b>Content</b>: {{notification.content}}</div>
+              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
+
+          <el-pagination
+            @size-change="handleAtMeSizeChange"
+            @current-change="handleAtMeCurrentChange"
+            :current-page="pageNumAtMe"
+            :page-sizes="[5, 10, 20, 30]"
+            :page-size="pageSizeAtMe"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalAtMe"
+            style="margin-left: 25%; margin-top: 10px">
+          </el-pagination>
         </div>
       </el-tab-pane>
 
@@ -69,19 +117,35 @@
         <div>
           <span style="margin-left: 10px">System Notifications</span>
           <el-collapse v-model="activeName" @change="handleChange" accordion>
-            <el-collapse-item v-for="notification in systemNotifications" :key="notification.id" :name="notification.id" style="margin-left: 15px">
+            <el-collapse-item v-for="notification in pageSystemNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
                   <i class="el-icon-bell right-3 item"></i>
                 </el-badge>
-                {{notification.title}}
+                <span :style="{ 'font-weight': notification.readStatus ? 'normal' : 'bold' }">{{ notification.title }}</span>
+                <div style="float: right">{{notification.createDate}}</div>
               </template>
-              <div>Datetime: {{notification.createDate}}</div>
-              <div v-if="notification.fromUser">From account: {{notification.fromUser}}</div>
-              <div v-else>From: System</div>
-              <div>Content: {{notification.content}}</div>
+              <div><b>Datetime</b>: {{notification.createDate}}</div>
+
+              <div v-if="notification.fromUser"><b>From account</b>: {{notification.fromUser}}</div>
+              <div v-else><b>From</b>: System</div>
+
+              <div><b>Content</b>: {{notification.content}}</div>
+              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
+
+          <el-pagination
+            @size-change="handleSystemSizeChange"
+            @current-change="handleSystemCurrentChange"
+            :current-page="pageNumSystem"
+            :page-sizes="[5, 10, 20, 30]"
+            :page-size="pageSizeSystem"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalSystem"
+            style="margin-left: 25%; margin-top: 10px">
+          </el-pagination>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -91,74 +155,74 @@
 </template>
 
 <script>
-  import {getNotifications, markAsRead} from '@/api/notification';
+  import {getAllNotifications, markAsRead, markAsUnread, deleteById} from '@/api/notification';
   import eventBus from '@/utils/eventBus.js';
   export default {
     name: "Notification",
     created() {
-      this.getNotifications()
+      this.getAllNotifications()
     },
     data() {
       return {
-        // activeNames: ['0'],
-        notificationList: [
-          /*{
-            id: '1',
-            readStatus: false,
-            title: 'I am a title',
-            content: 'I am the content',
-            type: '1', // 0: @me(comment,reply,star), 1:system
-            createDate: '2023-12-30 5:04',
-            //uid
-            //fromUid
-            fromUser: ''
-          },
-          {
-            id: '2',
-            readStatus: false,
-            title: 'Hello, this is my read notification',
-            content: 'I am the content, and I have read this content before',
-            type: '1', // 0: @me(comment,reply,star), 1:system
-            createDate: '2023-12-30 5:04',
-            //uid
-            //fromUid
-            fromUser: ''
-          },
-          {
-            id: '3',
-            readStatus: false,
-            title: 'Hello, someone\'s like you ',
-            content: 'User root click like on your article.',
-            type: '0', // 0: @me(comment,reply,star), 1:system
-            createDate: '2023-12-30 5:04',
-            //uid
-            //fromUid
-            fromUser: 'root'
-          },*/
-        ],
+        // pagination
+        pageSizeAll: 10,
+        pageNumAll: 1,
+        totalAll: 0,
+        pageSizeUnread: 10,
+        pageNumUnread: 1,
+        totalUnread: 0,
+        pageSizeAtMe: 10,
+        pageNumAtMe: 1,
+        totalAtMe: 0,
+        pageSizeSystem: 10,
+        pageNumSystem: 1,
+        totalSystem: 0,
+        // four types of notification lists
+        pageFullNotificationList: [],
+        fullNotificationList: [],
+        //unreadNotificationList: [],
+        pageUnreadNotificationList: [],
+        //atMeNotificationList: [],
+        pageAtMeNotificationList: [],
+        //systemNotificationList: [],
+        pageSystemNotificationList: [],
+        // element ui
         tabPosition: 'left',
         activeName: '0'
       };
     },
     computed: {
-      unreadNotifications() {
-        return this.notificationList.filter(notification => !notification.readStatus);
+      unreadNotificationList() {
+        let unread = this.fullNotificationList.filter(notification => !notification.readStatus);
+        this.totalUnread = unread.length;
+        return unread;
       },
       unreadCounts() {
-        return this.unreadNotifications.length;
+        return this.unreadNotificationList.length;
       },
-      atMeNotifications() {
-        return this.notificationList.filter(notification => notification.type === 0);
+      atMeNotificationList() {
+        let atMe = this.fullNotificationList.filter(notification => notification.type === 0);
+        this.totalAtMe = atMe.length;
+        return atMe;
       },
-      systemNotifications() {
-        return this.notificationList.filter(notification => notification.type === 1);
+      systemNotificationList() {
+        let system = this.fullNotificationList.filter(notification => notification.type === 1);
+        this.totalSystem = system.length;
+        return system;
       }
     },
     methods: {
-      getNotifications(){
+      getAllNotifications(){
         let that = this
-        getNotifications(that.$store.state.id).then(res => {
-          that.notificationList = res.data
+        getAllNotifications(that.$store.state.id).then(res => {
+
+          // fullNotificationList changed, so computed (Unread, AtMe, System) update
+          that.fullNotificationList = res.data.notificationList
+          that.totalAll = res.data.total
+          that.loadAllPageData()
+          that.loadUnreadPageData()
+          that.loadAtMePageData()
+          that.loadSystemPageData()
         }).catch(error => {
           if (error !== 'error') {
             that.$message({type: 'error', message: 'Notification list load failed!', showClose: true})
@@ -168,7 +232,7 @@
       handleChange(val) {
         let that = this
         let notificationId = val;
-        let notification = that.notificationList.find(item => item.id === notificationId);
+        let notification = that.fullNotificationList.find(item => item.id === notificationId);
 
         if (notification && !notification.readStatus) {
           // Notification is unread, send read request and update readStatus
@@ -182,7 +246,9 @@
         let that = this
         // Implement your logic to send a read request here
         // Once the request is successful, update the readStatus in the notificationList
-        let notification = this.notificationList.find(item => item.id === notificationId);
+
+        // fullNotificationList changed, so computed (Unread, AtMe, System) update
+        let notification = this.fullNotificationList.find(item => item.id === notificationId);
         if (notification) {
           notification.readStatus = true;
           markAsRead(notificationId).then(res => {
@@ -197,21 +263,118 @@
         }
       },
       markNotificationAsUnread(notificationId) {
+        let that = this
         // Implement your logic to send a read request here
-        // Once the request is successful, update the readStatus in the notificationList
-        let notification = this.notificationList.find(item => item.id === notificationId);
+        // Once the request is successful, update the readStatus in the pageNotificationList
+
+        // fullNotificationList changed, so computed (Unread, AtMe, System) update
+        let notification = this.fullNotificationList.find(item => item.id === notificationId);
         if (notification) {
-          notification.readStatus = true;
+          notification.readStatus = false;
+          markAsUnread(notificationId).then(res => {
+
+          }).catch(error => {
+            if (error !== 'error') {
+              that.$message({type: 'error', message: 'Notification mark as read failed!', showClose: true})
+            }
+          })
+          eventBus.$emit("unreadCountsChanged", this.unreadCounts)
           console.log(`Marked notification ${notificationId} as unread.`);
         }
-      }
+      },
+      deleteNotification(notificationId){
+        deleteById(notificationId)
+          .then(res => {
+            // Handle success if needed
+            // Remove the deleted notification from the notificationList
+            // fullNotificationList changed, so computed (Unread, AtMe, System) update
+            this.fullNotificationList = this.fullNotificationList.filter(item => item.id !== notificationId);
+            this.loadAllPageData()
+            eventBus.$emit('unreadCountsChanged', this.unreadCounts);
+            console.log(`Deleted notification with ID: ${notificationId}`);
+          })
+          .catch(error => {
+            if (error !== 'error') {
+              this.$message({ type: 'error', message: 'Notification deletion failed!', showClose: true });
+            }
+          });
+      },
+      handleAllSizeChange(val) {
+        this.pageNumAll = 1;
+        this.pageSizeAll = val;
+        // Load the corresponding data based on the selected page size
+        // You may need to modify this logic based on your actual use case
+        this.loadAllPageData();
+        console.log(`${val} items per page`);
+      },
+      handleAllCurrentChange(val) {
+        this.pageNumAll = val;
+        // Load the corresponding data based on the selected page
+        // You may need to modify this logic based on your actual use case
+        this.loadAllPageData();
+        console.log(`current page: ${val}`);
+      },
+      loadAllPageData() {
+        // Implement the logic to load the corresponding data for the current page
+        // You may need to adjust this based on your actual use case
+        // For example, update pageNotificationList with the data for the current page
+        const startIdx = (this.pageNumAll - 1) * this.pageSizeAll;
+        const endIdx = startIdx + this.pageSizeAll;
+        console.log('start: ' + startIdx + ', end: ' + endIdx)
+        this.pageFullNotificationList = this.fullNotificationList.slice(startIdx, endIdx);
+      },
+      handleUnreadSizeChange(val) {
+        this.pageNumUnread = 1;
+        this.pageSizeUnread = val;
+        this.loadUnreadPageData();
+      },
+      handleUnreadCurrentChange(val) {
+        this.pageNumUnread = val;
+        this.loadUnreadPageData();
+      },
+      loadUnreadPageData() {
+        const startIdx = (this.pageNumUnread - 1) * this.pageSizeUnread;
+        this.pageUnreadNotificationList = this.unreadNotificationList.slice(startIdx, startIdx + this.pageSizeUnread);
+      },
+      handleAtMeSizeChange(val) {
+        this.pageNumAtMe = 1;
+        this.pageSizeAtMe = val;
+        this.loadAtMePageData();
+      },
+      handleAtMeCurrentChange(val) {
+        this.pageNumAtMe = val;
+        this.loadAtMePageData();
+      },
+      loadAtMePageData() {
+        const startIdx = (this.pageNumAtMe - 1) * this.pageSizeAtMe;
+        this.pageAtMeNotificationList = this.atMeNotificationList.slice(startIdx, startIdx + this.pageSizeAtMe);
+      },
+      handleSystemSizeChange(val) {
+        this.pageNumSystem = 1;
+        this.pageSizeSystem = val;
+        this.loadSystemPageData();
+      },
+      handleSystemCurrentChange(val) {
+        this.pageNumSystem = val;
+        this.loadSystemPageData();
+      },
+      loadSystemPageData() {
+        const startIdx = (this.pageNumSystem - 1) * this.pageSizeSystem;
+        this.pageSystemNotificationList = this.systemNotificationList.slice(startIdx, startIdx + this.pageSizeSystem);
+      },
     }
   };
 </script>
 
 <style scoped>
 
-
+  .notification-btn{
+    font-size: 15px;
+    padding: 5px 5px;
+    margin-right: 10px;
+    margin-top: 15px;
+    cursor: pointer;
+  }
   .item {
     /*margin-top: 10px;
     margin-right: 40px;*/
