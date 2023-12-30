@@ -12,6 +12,8 @@
  Date: 04/28/2018 09:14:32 AM
 */
 
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
 show databases;
 create database cbse_blog;
 use cbse_blog;
@@ -25,11 +27,12 @@ set foreign_key_checks = 0;
 drop table if exists `me_article`;
 create table `me_article` (
                               `id` int(11) not null auto_increment,
-                              `comment_counts` int(11) default null,
+                              `comment_counts` int(11) default 0,
                               `create_date` datetime default null,
                               `summary` varchar(100) default null,
                               `title` varchar(64) default null,
-                              `view_counts` int(11) default null,
+                              `view_counts` int(11) default 0,
+                              `star_counts` int(11) default 0,
                               `weight` int(11) not null,
                               `author_id` bigint(20) default null,
                               `body_id` bigint(20) default null,
@@ -134,6 +137,7 @@ create table `sys_user` (
                             `status` varchar(255) default null,
                             `about_me_visible` bit(1) default null,
                             `about_me` varchar(255) default null,
+                            `unread_counts` int(10) default 0;
                             primary key (`id`),
                             unique key `UK_awpog86ljqwb89aqa1c5gvdrd` (`account`),
                             unique key `UK_ahtq5ew3v0kt1n7hf1sgp7p8l` (`email`)
@@ -143,6 +147,18 @@ drop table if exists `me_star`;
 create table `me_star` (
                                   `user_id` int(11) not null,
                                   `article_id` int(11) not null
+) engine=innodb default charset=utf8;
+
+drop table if exists `me_notification`;
+CREATE TABLE `me_notification` (
+                                 `id` bigint(20) not null auto_increment,
+                                 `read_status` bit(1) default null,
+                                 `title` varchar(64) default null,
+                                 `content` varchar(255) default null,
+                                 `type` int(10) default null comment '0: @me notifications (comment,star,reply) 1: system notifications',
+                                 `from_uid` bigint(20) default null,
+                                 `create_date` datetime default null,
+                                 primary key (`id`)
 ) engine=innodb default charset=utf8;
 
 set foreign_key_checks = 1;

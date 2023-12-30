@@ -2,16 +2,19 @@ package com.loloao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.loloao.common.Base;
 import com.loloao.common.Result;
 import com.loloao.entity.*;
 import com.loloao.enums.ResultCode;
 import com.loloao.mapper.*;
 import com.loloao.service.ArticleService;
+import com.loloao.service.NotificationService;
 import com.loloao.utils.UserUtils;
 import com.loloao.vo.ArticleVo;
 import com.loloao.vo.PageVo;
@@ -55,6 +58,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     public CommentMapper commentMapper;
+
+    @Resource
+    public NotificationService notificationService;
 
     @Override
     public List<Article> listArticles(PageVo pageVo) {
@@ -252,9 +258,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             articleTagMapper.insert(new ArticleTag(article.getId(), tag.getId()));
         }
 
+        //
+        //update notification
+        updateNotification(article, "published");
+
         return article.getId();
     }
 
+    /**
+     * get 'article' from frontend
+     * udpate 'oldArticle' in database
+     * @param article
+     * @return
+     */
     @Override
     @Transactional
     public Long updateArticle(Article article) {
@@ -289,6 +305,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             articleTagMapper.insert(new ArticleTag(oldArticle.getId(), tag.getId()));
         }
 
+        //update notification
+        updateNotification(oldArticle, "updated");
+
         return oldArticle.getId();
     }
 
@@ -306,6 +325,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         articleBodyMapper.delete(new LambdaQueryWrapper<ArticleBody>().eq(ArticleBody::getId, delArticle.getBodyId()));
         //delete article
         articleMapper.deleteById(id);
+
+        //update notification
+        updateNotification(delArticle, "deleted");
+    }
+
+    private void updateNotification(Article article, String operation){
+
+        User author = userMapper.selectById(article.getAuthorId());
+
+        Notification notification = new Notification();
+        // get notification author
+        notification.setType(Base.NOTIFICATION_SYSTEM_TYPE);
+        String title = "You " + operation +  " an article: <<" + article.getTitle() + ">>";
+        notification.setTitle("WOW! " + title);
+        notification.setContent(title + " Thank you for using our LoLoBlog platform! Have a nice day!");
+
+        // setup basic information and add notification
+        notificationService.addNotificationAndUpdateUnreadCounts(author, notification);
     }
 
     @Override

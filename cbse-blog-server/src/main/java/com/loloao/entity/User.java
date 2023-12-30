@@ -56,5 +56,7 @@ public class User implements Serializable {
     private String aboutMe;
 
     private Boolean aboutMeVisible;
+
+    private Integer unreadCounts;
     
 }

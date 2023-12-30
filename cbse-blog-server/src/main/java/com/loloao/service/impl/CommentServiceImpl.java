@@ -1,15 +1,16 @@
 package com.loloao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.loloao.entity.Article;
-import com.loloao.entity.Comment;
-import com.loloao.entity.User;
+import com.loloao.common.Base;
+import com.loloao.entity.*;
 import com.loloao.mapper.ArticleMapper;
 import com.loloao.mapper.CommentMapper;
 import com.loloao.mapper.UserMapper;
 import com.loloao.service.CommentService;
+import com.loloao.service.NotificationService;
 import com.loloao.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Resource
     public ArticleMapper articleMapper;
+
+    @Resource
+    public NotificationService notificationService;
 
     @Override
     public List<Comment> findAll() {
@@ -186,8 +190,53 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // insert method, automatically fill the id
         commentMapper.insert(comment);
 
+        // update notification
+        updateNotification(comment, article);
+
         return comment;
     }
+
+
+    private void updateNotification(Comment comment, Article article){
+
+        Notification notification = new Notification();
+
+        User fromUser = userMapper.selectById(comment.getAuthorId());
+        // notify article author
+        User author = userMapper.selectById( article.getAuthorId());
+
+        //if user is not commenting his own article, then notify article author
+        if(fromUser.getId() != author.getId()){
+            // from 'fromUser' to author
+            notification.setFromUid(fromUser.getId());
+            notification.setFromUser(fromUser.getAccount());
+            // get notification author
+            notification.setType(Base.NOTIFICATION_AT_ME_TYPE);
+            notification.setTitle("Attention! Someone commented your article!");
+            notification.setContent( "| " + fromUser.getAccount() + " | give a comment to your article: <<" + article.getTitle()
+                    + ">>, the comment content is : \"" + comment.getContent() + "\", and current comment counts is (" + article.getCommentCounts() + ")");
+            // notify author
+            notificationService.addNotificationAndUpdateUnreadCounts(author, notification);
+        }
+
+        // if comment is reply to someone, notify toUser
+        if(null != comment.getToUser()){
+            // notify toUser
+            User toUser = userMapper.selectById( comment.getToUser().getId());
+            //if user replied his own comment, then do nothing
+            if(fromUser.getId() == toUser.getId()){
+                return;
+            }
+            //reuse notification object
+            Comment parentComment = commentMapper.selectById(comment.getParentId());
+            notification.setTitle("Attention! Someone reply your comment!");
+            notification.setContent( "| " + fromUser.getAccount() + " | said \"" + comment.getContent() + "\" to your comment, in article: <<" + article.getTitle()
+                    + ">>, your comment content is : \"" + parentComment.getContent() + "\"");
+            notification.setId(null);
+            notificationService.addNotificationAndUpdateUnreadCounts(toUser, notification);
+        }
+    }
+
 
     @Override
     public void deleteCommentByIdAndChangeCounts(Integer id) {

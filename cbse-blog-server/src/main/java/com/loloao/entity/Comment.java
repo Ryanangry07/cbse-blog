@@ -42,6 +42,7 @@ public class Comment  {
     
     private Long authorId;
 
+    // person who wrote the comment
     @TableField(exist = false)
     private User author;
     

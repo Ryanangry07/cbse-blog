@@ -161,6 +161,7 @@
   import {getCommentsByArticle, publishComment} from '@/api/comment'
 
   import default_avatar from '@/assets/img/default_avatar.png'
+  import eventBus from "@/utils/eventBus";
 
   export default {
     name: 'BlogView',
@@ -318,6 +319,7 @@
           console.log(data.data.starStatus)
           that.article.starStatus = (that.article.starStatus === 'el-icon-star-off') ? 'el-icon-star-on' : 'el-icon-star-off';
           that.article.starCounts = data.data.starCounts
+          // eventBus.$emit("unreadCountsIncrement")
         }).catch(error => {
           if (error !== 'error') {
             that.$message({type: 'error', message: 'star failed', showClose: true})

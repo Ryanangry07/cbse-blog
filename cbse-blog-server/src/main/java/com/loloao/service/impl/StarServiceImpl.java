@@ -1,17 +1,23 @@
 package com.loloao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loloao.common.Base;
 import com.loloao.entity.Article;
+import com.loloao.entity.Notification;
 import com.loloao.entity.Star;
+import com.loloao.entity.User;
 import com.loloao.mapper.ArticleMapper;
 import com.loloao.mapper.StarMapper;
+import com.loloao.mapper.UserMapper;
+import com.loloao.service.NotificationService;
 import com.loloao.service.StarService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +30,13 @@ public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements St
 
     @Resource
     public ArticleMapper articleMapper;
+
+    @Resource
+    public UserMapper userMapper;
+
+    @Resource
+    public NotificationService notificationService;
+
 
     @Override
     public String loadStar(Star star) {
@@ -77,10 +90,36 @@ public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements St
             newCount = article.getStarCounts() + 1;
             article.setStarCounts(newCount);
             articleMapper.updateById(article);
+
+            // update notification when user give star
+            updateNotification(star);
         }
         //result
         result.put("starStatus", newStarStatus);
         result.put("starCounts", newCount);
         return result;
+    }
+
+    private void updateNotification(Star star){
+
+        Article article = articleMapper.selectById(star.getArticleId());
+        User fromUser = userMapper.selectById(star.getUserId());
+        User author = userMapper.selectById(article.getAuthorId());
+
+        //if author give the star to his own article, then do nothing
+        if(fromUser.getId() == author.getId()){
+            return;
+        }
+
+        Notification notification = new Notification();
+        notification.setFromUid(fromUser.getId());
+        notification.setFromUser(fromUser.getAccount());
+        // get notification author
+        notification.setType(Base.NOTIFICATION_AT_ME_TYPE);
+        notification.setTitle("Congratulations! Someone likes your article!");
+        notification.setContent("| " + fromUser.getAccount() + " | give a star to your article: <<" + article.getTitle()
+                + ">>, current star counts is (" + article.getStarCounts() + ")");
+
+        notificationService.addNotificationAndUpdateUnreadCounts(author, notification);
     }
 }

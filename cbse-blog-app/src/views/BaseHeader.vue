@@ -42,14 +42,19 @@
           </template>
 
           <template v-else>
-            <i style="margin-right: 10px" class="el-icon-message"></i>
-            <el-dropdown trigger="click" placement="top" style="line-height: 60px" @click="handleClick">
+            <el-badge :hidden="hidden" :value="formattedUnreadCounts" class="item">
+<!--              <i style="margin-right: 10px" class="el-icon-message"></i>-->
+              <el-button @click.native="goToNotification" size="small" style="margin-bottom: 4px" icon="el-icon-message" circle></el-button>
+            </el-badge>
+            <el-dropdown trigger="click" placement="top" style="line-height: 60px">
 
               <img class="me-header-picture el-dropdown-link" :src="user.avatar"/>
 
               <el-dropdown-menu slot="dropdown">
 <!--                <el-dropdown-item @click="logout"><i class="el-icon-user"></i>Profile</el-dropdown-item>
                 <el-dropdown-item @click="logout"><i class="el-icon-back"></i>Logout</el-dropdown-item>-->
+                <el-dropdown-item @click.native="goToProfile">My Articles</el-dropdown-item>
+                <el-dropdown-item @click.native="goToProfile">My Stars</el-dropdown-item>
                 <el-dropdown-item @click.native="goToProfile">Profile</el-dropdown-item>
                 <el-dropdown-item @click.native="logout">Logout</el-dropdown-item>
               </el-dropdown-menu>
@@ -71,6 +76,8 @@
 </template>
 
 <script>
+  import eventBus from '@/utils/eventBus.js';
+  import {loadUnreadCounts} from '@/api/notification.js';
   export default {
     name: 'BaseHeader',
     props: {
@@ -81,9 +88,32 @@
       }
     },
     data() {
-      return {}
+      return {
+        unreadCounts: 0,
+        hidden: false
+      }
+    },
+    created() {
+      if(this.$store.state.id){
+        this.loadUnreadCounts();
+      }
+      eventBus.$on('unreadCountsChanged', counts => {
+        this.unreadCounts = counts;
+      });
+      eventBus.$on('unreadCountsIncrement', counts => {
+        this.unreadCounts += 1;
+      });
     },
     computed: {
+      formattedUnreadCounts() {
+        // Display null when unreadCounts is 0, otherwise, display the actual value
+        if(this.unreadCounts === 0){
+          this.hidden = true;
+        }else{
+          this.hidden = false;
+        }
+        return this.unreadCounts;
+      },
       user() {
         let login = this.$store.state.account.length != 0
         let avatar = this.$store.state.avatar
@@ -108,8 +138,19 @@
         console.log('go to profile')
         this.$router.push("/profile");
       },
-      handleClick() {
-        alert('button click');
+      goToNotification(){
+        console.log('go to profile')
+        this.$router.push("/notification");
+      },
+      loadUnreadCounts(){
+        let that = this
+        loadUnreadCounts(that.$store.state.id).then(res => {
+          that.unreadCounts = res.data.unreadCounts
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'Unread notification counts load failed', showClose: true})
+          }
+        })
       }
     }
   }
@@ -159,5 +200,10 @@
     border-radius: 50%;
     vertical-align: middle;
     background-color: #5fb878;
+  }
+
+  .item {
+    margin-top: 10px;
+    margin-right: 40px;
   }
 </style>
