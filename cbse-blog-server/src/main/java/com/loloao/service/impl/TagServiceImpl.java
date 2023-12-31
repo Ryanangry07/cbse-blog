@@ -48,6 +48,11 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     }
 
     @Override
+    public Integer getTagIDByName(String name) {
+        return tagMapper.getTagID(name);
+    }
+
+    @Override
     public Integer saveTag(Tag tag) {
         return tagMapper.insert(tag);
     }
@@ -60,6 +65,22 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 
     @Override
     public void deleteTagById(String id) {
+        List<Integer> articlesID = articleMapper.getArticleIdsByTagId(Long.parseLong(id));
+        Integer othersID = tagMapper.getTagID("Others");
+
+        for (Integer articleID : articlesID) {
+            // Check if article had more than one tag assigned
+            LambdaQueryWrapper<ArticleTag> recordNum = new LambdaQueryWrapper<>();
+            recordNum.eq(ArticleTag::getArticleId, articleID);
+            Integer count = articleTagMapper.selectCount(recordNum);
+            if (count <= 1) { // assign with Others if only one
+                articleTagMapper.insert(new ArticleTag(articleID.longValue(), othersID.longValue()));
+            }
+        }
+        // delete all record with id assigned in me_article_tag & me_tag
+        LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleTag::getTagId, id);
+        articleTagMapper.delete(wrapper);
         tagMapper.deleteById(id);
     }
 

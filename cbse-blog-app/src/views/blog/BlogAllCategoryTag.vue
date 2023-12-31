@@ -180,7 +180,7 @@
         
           <el-form-item label="Select Category to Merge:" prop="selectedcategories">
             <el-checkbox-group v-model="mergeCategoryForm.selectedcategories" size="mini">
-              <el-checkbox v-for="c in categorys" :key="c.id" :label="c.id" border>{{c.categoryname}}</el-checkbox>
+              <el-checkbox v-for="c in categorys" v-if="c.categoryname !== 'Others'" :key="c.id" :label="c.id" border>{{c.categoryname}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="New Category Name" prop="mergedcategoryname">
@@ -211,7 +211,7 @@
         
           <el-form-item label="Select Tag to Merge:" prop="selectedtags">
             <el-checkbox-group v-model="mergeTagForm.selectedtags" size="mini">
-              <el-checkbox v-for="t in tags" :key="t.id" :label="t.id" border>{{t.tagname}}</el-checkbox>
+              <el-checkbox v-for="t in tags" v-if="t.tagname !== 'Others'" :key="t.id" :label="t.id" border>{{t.tagname}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="New Tag Name" prop="mergedtagname">
@@ -336,7 +336,9 @@ export default {
   },
   methods: {
     view(id) {
-      this.$router.push({ path: `/${this.currentActiveName}/${id}` });
+      this.$router.push({ 
+        path: `/${this.currentActiveName}/${id}`,
+      });
     },
     getCategorys() {
       let that = this;

@@ -41,6 +41,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    public Integer getCategoryIDByName(String name) {
+        return categoryMapper.getCategoryID(name);
+    }
+
+    @Override
     public Integer saveCategory(Category category) {
         return categoryMapper.insert(category);
     }
@@ -53,8 +58,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public void deleteCategoryById(String id) {
-        categoryMapper.deleteById(id);
+    public void deleteCategoryById(String categoryID) {
+        Integer newID = categoryMapper.getCategoryID("Others");
+        List<Integer> articlesID = articleMapper.getArticleIdsByCategoryId(categoryID);
+        for (Integer articleID : articlesID) {
+            Article oldArticle = articleMapper.selectById(articleID);
+            // oldArticle.setCategory(newCategory);
+            oldArticle.setCategoryId(newID.longValue());
+            articleMapper.updateById(oldArticle);
+        }
+        categoryMapper.deleteById(categoryID);
     }
 
     @Override
@@ -71,7 +84,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
                 oldArticle.setCategoryId(newCategoryID.longValue());
                 articleMapper.updateById(oldArticle);
             }
-            deleteCategoryById(categoryID);
+            categoryMapper.deleteById(categoryID);
         }
         return newCategoryID;
     }

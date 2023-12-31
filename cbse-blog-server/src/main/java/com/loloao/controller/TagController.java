@@ -153,4 +153,21 @@ public class TagController {
         r.simple().put("tagId", tagId);
         return r;
     }
+
+    @GetMapping("/getID/{name}")
+    public Result getTagByName(@PathVariable("name") String name) {
+
+        Result result = new Result();
+
+        if (null == name) {
+            result.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return result;
+        }
+
+        Integer id = tagService.getTagIDByName(name);
+
+        result.setResultCode(ResultCode.SUCCESS);
+        result.setData(id);
+        return result;
+    }
 }

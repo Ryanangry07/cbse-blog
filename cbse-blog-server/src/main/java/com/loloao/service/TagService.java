@@ -18,6 +18,8 @@ public interface TagService extends IService<Tag> {
 
     Tag getTagById(Integer id);
 
+    Integer getTagIDByName(String name);
+
     Integer saveTag(Tag tag);
 
     Integer updateTag(Tag tag);

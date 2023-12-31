@@ -92,3 +92,17 @@ export function editTag(avatar, tagname, id) {
     data
   })
 }
+
+export function deleteTag(id) {
+  return request({
+    url: `/tags/delete/${id}`,
+    method: 'get'
+  })
+}
+
+export function getTagByName(name){
+  return request({
+    url: `/tags/getID/${name}`,
+    method: 'get',
+  })
+}

@@ -87,3 +87,17 @@ export function editCategory(avatar, categoryname, id, description) {
     data
   })
 }
+
+export function deleteCategory(id) {
+  return request({
+    url: `/categorys/delete/${id}`,
+    method: 'get'
+  })
+}
+
+export function getCategoryByName(name){
+  return request({
+    url: `/categorys/getID/${name}`,
+    method: 'get',
+  })
+}

@@ -151,4 +151,21 @@ public class CategoryController {
         return result;
     }
 
+    @GetMapping("/getID/{name}")
+    public Result getCategoryByName(@PathVariable("name") String name) {
+
+        Result result = new Result();
+
+        if (null == name) {
+            result.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return result;
+        }
+
+        Integer id = categoryService.getCategoryIDByName(name);
+
+        result.setResultCode(ResultCode.SUCCESS);
+        result.setData(id);
+        return result;
+    }
+
 }

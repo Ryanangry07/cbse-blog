@@ -18,6 +18,8 @@ public interface CategoryService extends IService<Category> {
 
     Category getCategoryById(Integer id);
 
+    Integer getCategoryIDByName(String name);
+
     Integer saveCategory(Category category);
 
     Integer updateCategory(Category category);

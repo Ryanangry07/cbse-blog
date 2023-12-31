@@ -7,7 +7,8 @@
             <img class="me-ct-picture" :src="ct.avatar?ct.avatar:defaultAvatar"/>
             <div class="me-one-row">
               <h3 class="me-ct-name">{{ct.tagname}}</h3>
-              <el-button v-if="1 == this.$store.state.admin" icon="el-icon-edit" size="mini" @click="editTagDialog" class="edit-button" circle></el-button>
+              <el-button v-if="1 == this.$store.state.admin && ct.tagname != 'Others'" icon="el-icon-edit" size="mini" @click="editTagDialog" class="button" circle></el-button>
+              <el-button v-if="1 == this.$store.state.admin && ct.tagname != 'Others'" type="danger" icon="el-icon-delete" size="mini" @click="deleteTagMessage" class="button" circle></el-button>
             </div>
           </template>
 
@@ -15,7 +16,8 @@
             <img class="me-ct-picture" :src="ct.avatar?ct.avatar:defaultAvatar"/>
             <div class="me-one-row">
               <h3 class="me-ct-name">{{ct.categoryname}}</h3>
-              <el-button v-if="1 == this.$store.state.admin" icon="el-icon-edit" size="mini" @click="editCategoryDialog" class="edit-button" circle></el-button>
+              <el-button v-if="1 == this.$store.state.admin && ct.categoryname != 'Others'" icon="el-icon-edit" size="mini" @click="editCategoryDialog" class="button" circle></el-button>
+              <el-button v-if="1 == this.$store.state.admin && ct.categoryname != 'Others'" type="danger" icon="el-icon-delete" size="mini" @click="deleteCategoryMessage" class="button" circle></el-button>
             </div>
             <p>{{ct.description}}</p>
           </template>
@@ -77,7 +79,7 @@
             label-width="120px"
             style="padding-right: 20px"
           >
-            <el-form-item label="Tag Name" props="tagname">
+            <el-form-item label="Tag Name" prop="tagname">
               <el-col :span="20">
                 <el-input v-model="tagForm.tagname"></el-input>
               </el-col>
@@ -114,8 +116,8 @@
 <script>
   import ArticleScrollPage from '@/views/common/ArticleScrollPage'
   import {getArticlesByCategory, getArticlesByTag} from '@/api/article'
-  import {getTagDetail, editTag} from '@/api/tag'
-  import {getCategoryDetail, editCategory} from '@/api/category'
+  import {getTagDetail, editTag, deleteTag, getTagByName} from '@/api/tag'
+  import {getCategoryDetail, editCategory, deleteCategory, getCategoryByName} from '@/api/category'
   import defaultAvatar from '@/assets/img/logo.png'
 
 
@@ -153,16 +155,14 @@
         },
         categoryRules: {
           categoryname: [
-            {
-              required: true,
-              message: "Please enter category name",
-              trigger: "blur",
-            },
+          { required: true, message: "Please enter category name", trigger: "blur" },
+            { validator: this.checkUniqueCategoryName, trigger: "blur" },
           ],
         },
         tagRules: {
           tagname: [
             { required: true, message: "Please enter tag name", trigger: "blur" },
+            { validator: this.checkUniqueTagName, trigger: "blur" },
           ],
         },
       }
@@ -239,25 +239,15 @@
       },
       editCategoryDialog() {
         this.categoryDialogVisible = true;
-        //this.resetForm();
-        this.$nextTick(() => {
-          this.resetCategoryForm();
-        });
+        this.categoryForm.avatar = ct.avatar;
+        this.categoryForm.categoryname = ct.categoryname;
+        this.categoryForm.description = ct.description;
       },
       editTagDialog() {
         this.tagDialogVisible = true;
-        //this.resetForm();
-        this.$nextTick(() => {
-          this.resetTagForm();
-        });
-      },
-      resetCategoryForm() {
-        this.categoryForm.avatar = "";
-        this.$refs.categoryForm.resetFields();
-      },
-      resetTagForm() {
-        this.tagForm.avatar = "";
-        this.$refs.tagForm.resetFields();
+        that.tagForm.tagname = data.data.tagname
+        that.tagForm.avatar = data.data.avatar
+        that.tagForm.id = data.data.id
       },
       editCategoryForm() {
         // check form input by using 'rules[]'
@@ -288,7 +278,7 @@
         if (that.imageUrl == null) {
           that.imageUrl = "/category/lift.jpg"; //default
         }
-        editCategory(that.imageUrl, that.categoryForm.categoryname, that.categoryForm.id, that.categoryForm.description)
+        editCategory(that.imageUrl, that.categoryForm.categoryname, this.$route.params.id , that.categoryForm.description)
           .then((res) => {
             console.log(res);
             this.categoryDialogVisible = false;
@@ -335,6 +325,70 @@
             }
           });
       },
+      deleteCategoryMessage(){
+        let that = this;
+        this.$confirm("This will merge all the articles in this category to 'Others'. Continue?", 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          console.log("hi")
+          deleteCategory(that.categoryForm.id)
+          .then((res) =>{
+            console.log("hello")
+            this.$message({
+              type: 'success',
+              message: 'Delete completed'
+            });
+            that.$router.push({ path: '/category/all' })
+          })
+          .catch((error) => {
+            if (error !== "error") {
+              that.$message({
+                type: "error",
+                message: "edit tag failed",
+                showClose: true,
+              });
+            }
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Delete canceled'
+          });          
+        });
+      },
+      deleteTagMessage(){
+        let that = this;
+        this.$confirm("This will merge all the articles in this tag to 'Others'. Continue?", 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          deleteTag(that.tagForm.id)
+          .then((res) =>{
+            this.$message({
+              type: 'success',
+              message: 'Delete completed'
+            });
+            that.$router.push({ path: '/category/all' })
+          })
+          .catch((error) => {
+            if (error !== "error") {
+              that.$message({
+                type: "error",
+                message: "edit tag failed",
+                showClose: true,
+              });
+            }
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Delete canceled'
+          });          
+        });
+      },
       handleAvatarSuccess(res, file) {
         let that = this;
         if (res.code == 0) {
@@ -358,6 +412,40 @@
         }
         //return isJPG && isLt2M;
         return isLt2M;
+      },
+      checkUniqueCategoryName(rule, value, callback) {
+        if(value == this.ct.categoryname){
+          callback();
+        }else{
+          getCategoryByName(value).then(data =>{
+            if(data.data != null){
+              callback(new Error("Category name already exists"));
+            }else{
+              callback();
+            }
+          }).catch(error => {
+            if (error !== 'error') {
+              that.$message({type: 'error', message: '标签加载失败', showClose: true})
+            }
+          })
+        }
+      },
+      checkUniqueTagName(rule, value, callback) {
+        if(value == this.ct.tagname){
+          callback();
+        }else{
+          getTagByName(value).then(data =>{
+            if(data.data != null){
+              callback(new Error("Tag name already exists"));
+            }else{
+              callback();
+            }
+          }).catch(error => {
+            if (error !== 'error') {
+              that.$message({type: 'error', message: '标签加载失败', showClose: true})
+            }
+          })
+        }
       },
     },
     components: {
@@ -386,10 +474,11 @@
   .me-one-row {
     display: flex;
     justify-content: center;
+    margin-top: 10px;
     margin-bottom: 10px;
   }
 
-  .edit-button {
+  .button {
     border-radius: 50%; /* Make the button circular */
     margin-left: 10px; /* Adjust margin as needed */
   }
