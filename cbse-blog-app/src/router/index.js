@@ -56,6 +56,14 @@ const router = new Router({
           component: r => require.ensure([], () => r(require('@/views/blog/BlogArchive')), 'archives')
         },
         {
+          path: '/blogmy',
+          component: r => require.ensure([], () => r(require('@/views/blog/BlogMy')), 'blogmy')
+        },
+        {
+          path: '/mystars',
+          component: r => require.ensure([], () => r(require('@/views/blog/BlogMyStars')), 'mystars')
+        },
+        {
           path: '/messageBoard',
           component: r => require.ensure([], () => r(require('@/views/MessageBoard')), 'messageboard')
         },

@@ -14,7 +14,9 @@ export function getArticles(query, page) {
       month: query.month,
       tagId: query.tagId,
       categoryId: query.categoryId,
-      keyword: query.keyword
+      keyword: query.keyword,
+      authorId: query.authorId,
+      starUid: query.starUid
     }
   })
 }
@@ -95,6 +97,13 @@ export function publishArticle(article) {
 export function listArchives() {
   return request({
     url: '/articles/listArchives',
+    method: 'get'
+  })
+}
+
+export function listArchivesByUserId(userId) {
+  return request({
+    url: `/articles/listArchives/${userId}`,
     method: 'get'
   })
 }

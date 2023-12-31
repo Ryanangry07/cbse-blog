@@ -53,8 +53,8 @@
               <el-dropdown-menu slot="dropdown">
 <!--                <el-dropdown-item @click="logout"><i class="el-icon-user"></i>Profile</el-dropdown-item>
                 <el-dropdown-item @click="logout"><i class="el-icon-back"></i>Logout</el-dropdown-item>-->
-                <el-dropdown-item @click.native="goToProfile">My Articles</el-dropdown-item>
-                <el-dropdown-item @click.native="goToProfile">My Stars</el-dropdown-item>
+                <el-dropdown-item @click.native="goToMyArticles">My Articles</el-dropdown-item>
+                <el-dropdown-item @click.native="goToMyStars">My Stars</el-dropdown-item>
                 <el-dropdown-item @click.native="goToProfile">Profile</el-dropdown-item>
                 <el-dropdown-item @click.native="logout">Logout</el-dropdown-item>
               </el-dropdown-menu>
@@ -132,6 +132,12 @@
             that.$message({message: error, type: 'error', showClose: true});
           }
         })
+      },
+      goToMyArticles(){
+        this.$router.push("/blogmy");
+      },
+      goToMyStars(){
+        this.$router.push("/mystars");
       },
       goToProfile() {
         // Use this.$router.push to navigate to the "/profile" route

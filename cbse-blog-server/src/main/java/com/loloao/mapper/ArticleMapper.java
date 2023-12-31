@@ -36,4 +36,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     @Select("SELECT at.article_id FROM me_article_tag at WHERE at.tag_id = #{tagId}")
     List<Integer> getArticleIdsByTagId(Long tagId);
+
+    @Select("SELECT s.article_id FROM me_star s WHERE s.user_id = #{starUid}")
+    List<Integer> getArticleIdsByStarUid(Long starUid);
 }

@@ -101,38 +101,38 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         QueryWrapper<Article> wrapper = new QueryWrapper<>();
         wrapper.eq(ObjectUtils.isNotNull(article.getYear()),"DATE_FORMAT (create_date,'%Y')", article.getYear());
         wrapper.eq(ObjectUtils.isNotNull(article.getMonth()),"DATE_FORMAT (create_date,'%m')", article.getMonth());
+        // my articles, query articles by authorId
+        wrapper.eq(ObjectUtils.isNotNull(article.getAuthorId()),"author_id", article.getAuthorId());
+        // my stars, query articles starred by uid
+        if(ObjectUtils.isNotNull(article.getStarUid())){
+            List<Integer> articleIdList = articleMapper.getArticleIdsByStarUid(article.getStarUid());
+            if(articleIdList.size() > 0) {
+                wrapper.in("id", articleIdList);
+            }else{
+                // no star articles fulfilled query condition, return empty list
+                return new ArrayList<>();
+            }
+        }
+        // query tag
         if(ObjectUtils.isNotNull(article.getTagId())) {
             List<Integer> articleIdList = articleMapper.getArticleIdsByTagId(article.getTagId());
             if(articleIdList.size() > 0) {
                 wrapper.in("id", articleIdList);
             }else{
-                // no tag fulfilled query condition
+                // no tag fulfilled query condition, return empty list
                 return new ArrayList<>();
             }
         }
         wrapper.eq(ObjectUtils.isNotNull(article.getCategoryId()), "category_id", article.getCategoryId());
         // search (summary and title)
         wrapper.like(StringUtils.isNotBlank(article.getKeyword()), "CONCAT(summary,title)", article.getKeyword());
+        // manual pagination by using 'LIMIT'
         wrapper.last("ORDER BY create_date DESC LIMIT " + ((cur - 1) * size) + ", " + size);
 
 
         //package result list
-        //IPage<Article> result = articleMapper.selectPage(page, wrapper);
         List<Article> list = fillAuthorCategoryTagsById(articleMapper.selectList(wrapper));
 
-        // tag condition
-        /*if(ObjectUtils.isNotNull(article.getTagId())){
-
-        }*/
-
-        // handle many to one relationship
-        //List<Article> list = result.getRecords();
-        /*for(Article a : list){
-            User author = userMapper.selectById(a.getAuthorId());
-            Category category = categoryMapper.selectById(a.getCategoryId());
-            a.setAuthor(author);
-            a.setCategory(category);
-        }*/
         return list;
     }
 
