@@ -12,10 +12,7 @@ import com.loloao.entity.Notification;
 import com.loloao.enums.ResultCode;
 import com.loloao.service.NotificationService;
 import com.loloao.utils.UserUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -108,6 +105,60 @@ public class NotificationController {
         //List<Notification> list = notificationService.getNotificationsByUserId(userId);
         result.setResultCode(ResultCode.SUCCESS);
         //result.setData(list);
+        return result;
+    }
+
+    @PostMapping("/read")
+    public Result markPageAsRead(@RequestBody List<Long> page){
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        Result result = new Result();
+        if (null == page) {
+            result.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return result;
+        }
+        if(page.size() > 0){
+            //
+            notificationService.markPageAsRead(page);
+        }
+        result.setResultCode(ResultCode.SUCCESS);
+        return result;
+    }
+
+    @PostMapping("/unread")
+    public Result markPageAsUnread(@RequestBody List<Long> page){
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        Result result = new Result();
+        if (null == page) {
+            result.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return result;
+        }
+        if(page.size() > 0){
+            //
+            notificationService.markPageAsUnread(page);
+        }
+        result.setResultCode(ResultCode.SUCCESS);
+        return result;
+    }
+
+    @PostMapping("/delete")
+    public Result deletePage(@RequestBody List<Long> page){
+        if(UserUtils.getCurrentUser() == null){
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        Result result = new Result();
+        if (null == page) {
+            result.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return result;
+        }
+        if(page.size() > 0){
+            //
+            notificationService.deletePage(page);
+        }
+        result.setResultCode(ResultCode.SUCCESS);
         return result;
     }
 

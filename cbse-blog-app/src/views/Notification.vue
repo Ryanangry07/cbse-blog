@@ -5,7 +5,13 @@
       <el-tab-pane label="All Notifications">
         <div>
           <span style="margin-left: 10px">All Notifications</span>
-          <el-collapse v-model="activeName" @change="handleChange" accordion>
+          <div style="float: right; margin-top: -15px">
+            <el-button type="primary" class="el-icon-info notification-btn" @click="markPageAsRead(pageFullNotificationList)">&nbsp Mark This Page as Read</el-button>
+            <el-button type="warning" class="el-icon-question notification-btn" @click="markPageAsUnread(pageFullNotificationList)">&nbsp Mark This Page as Unread</el-button>
+            <el-button type="danger" class="el-icon-delete notification-btn" @click="deletePage(pageFullNotificationList)">&nbsp Delete This Page</el-button>
+          </div>
+
+          <el-collapse style="margin-top: 13px" v-model="activeName" @change="handleChange" accordion>
             <el-collapse-item v-for="notification in pageFullNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
@@ -21,7 +27,7 @@
               <div v-else><b>From</b>: System</div>
 
               <div><b>Content</b>: {{notification.content}}</div>
-              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="warning" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
               <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
@@ -41,8 +47,14 @@
 
       <el-tab-pane label="Unread Notifications">
         <div>
-          <span style="margin-left: 10px">All Notifications</span>
-          <el-collapse v-model="activeName" @change="handleChange" accordion>
+          <span style="margin-left: 10px">Unread Notifications</span>
+          <div style="float: right; margin-top: -15px">
+            <el-button type="primary" class="el-icon-info notification-btn" @click="markPageAsRead(pageUnreadNotificationList)">&nbsp Mark This Page as Read</el-button>
+            <el-button type="warning" class="el-icon-question notification-btn" @click="markPageAsUnread(pageUnreadNotificationList)">&nbsp Mark This Page as Unread</el-button>
+            <el-button type="danger" class="el-icon-delete notification-btn" @click="deletePage(pageUnreadNotificationList)">&nbsp Delete This Page</el-button>
+          </div>
+
+          <el-collapse style="margin-top: 13px" v-model="activeName" @change="handleChange" accordion>
             <el-collapse-item v-for="notification in pageUnreadNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
@@ -57,7 +69,7 @@
               <div v-else><b>From</b>: System</div>
 
               <div><b>Content</b>: {{notification.content}}</div>
-              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="warning" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
               <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
@@ -78,7 +90,13 @@
       <el-tab-pane label="@me Notifications">
         <div>
           <span style="margin-left: 10px">@me Notifications</span>
-          <el-collapse v-model="activeName" @change="handleChange" accordion>
+          <div style="float: right; margin-top: -15px">
+            <el-button type="primary" class="el-icon-info notification-btn" @click="markPageAsRead(pageAtMeNotificationList)">&nbsp Mark This Page as Read</el-button>
+            <el-button type="warning" class="el-icon-question notification-btn" @click="markPageAsUnread(pageAtMeNotificationList)">&nbsp Mark This Page as Unread</el-button>
+            <el-button type="danger" class="el-icon-delete notification-btn" @click="deletePage(pageAtMeNotificationList)">&nbsp Delete This Page</el-button>
+          </div>
+
+          <el-collapse style="margin-top: 13px" v-model="activeName" @change="handleChange" accordion>
             <el-collapse-item v-for="notification in pageAtMeNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
@@ -94,7 +112,7 @@
               <div v-else><b>From</b>: System</div>
 
               <div><b>Content</b>: {{notification.content}}</div>
-              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="warning" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
               <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
@@ -116,7 +134,13 @@
       <el-tab-pane label="System Notifications">
         <div>
           <span style="margin-left: 10px">System Notifications</span>
-          <el-collapse v-model="activeName" @change="handleChange" accordion>
+          <div style="float: right; margin-top: -15px">
+            <el-button type="primary" class="el-icon-info notification-btn" @click="markPageAsRead(pageSystemNotificationList)">&nbsp Mark This Page as Read</el-button>
+            <el-button type="warning" class="el-icon-question notification-btn" @click="markPageAsUnread(pageSystemNotificationList)">&nbsp Mark This Page as Unread</el-button>
+            <el-button type="danger" class="el-icon-delete notification-btn" @click="deletePage(pageSystemNotificationList)">&nbsp Delete This Page</el-button>
+          </div>
+
+          <el-collapse style="margin-top: 13px" v-model="activeName" @change="handleChange" accordion>
             <el-collapse-item v-for="notification in pageSystemNotificationList" :key="notification.id" :name="notification.id" style="margin-left: 15px">
               <template slot="title">
                 <el-badge :is-dot="!notification.readStatus" class="item">
@@ -131,7 +155,7 @@
               <div v-else><b>From</b>: System</div>
 
               <div><b>Content</b>: {{notification.content}}</div>
-              <el-button type="info" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
+              <el-button type="warning" class="el-icon-question notification-btn" @click="markNotificationAsUnread(notification.id)">&nbsp Mark as Unread</el-button>
               <el-button type="danger" class="el-icon-delete notification-btn" @click="deleteNotification(notification.id)">&nbsp Delete</el-button>
             </el-collapse-item>
           </el-collapse>
@@ -155,7 +179,8 @@
 </template>
 
 <script>
-  import {getAllNotifications, markAsRead, markAsUnread, deleteById} from '@/api/notification';
+  import {getAllNotifications, markAsRead, markAsUnread, deleteById,
+    markPageAsRead, markPageAsUnread, deletePage} from '@/api/notification';
   import eventBus from '@/utils/eventBus.js';
   export default {
     name: "Notification",
@@ -197,9 +222,6 @@
         this.totalUnread = unread.length;
         return unread;
       },
-      unreadCounts() {
-        return this.unreadNotificationList.length;
-      },
       atMeNotificationList() {
         let atMe = this.fullNotificationList.filter(notification => notification.type === 0);
         this.totalAtMe = atMe.length;
@@ -221,6 +243,8 @@
           that.totalAll = res.data.total
           that.loadAllPageData()
           that.loadUnreadPageData()
+          that.unreadCounts = that.unreadNotificationList.length
+          eventBus.$emit("unreadCountsChanged", this.unreadCounts)
           that.loadAtMePageData()
           that.loadSystemPageData()
         }).catch(error => {
@@ -252,13 +276,13 @@
         if (notification) {
           notification.readStatus = true;
           markAsRead(notificationId).then(res => {
-
+            this.getAllNotifications()
           }).catch(error => {
             if (error !== 'error') {
               that.$message({type: 'error', message: 'Notification mark as read failed!', showClose: true})
             }
           })
-          eventBus.$emit("unreadCountsChanged", this.unreadCounts)
+          // eventBus.$emit("unreadCountsChanged", this.totalUnread)
           //console.log(`Marked notification ${notificationId} as read.`);
         }
       },
@@ -272,14 +296,14 @@
         if (notification) {
           notification.readStatus = false;
           markAsUnread(notificationId).then(res => {
-
+            this.getAllNotifications()
           }).catch(error => {
             if (error !== 'error') {
               that.$message({type: 'error', message: 'Notification mark as read failed!', showClose: true})
             }
           })
-          eventBus.$emit("unreadCountsChanged", this.unreadCounts)
-          console.log(`Marked notification ${notificationId} as unread.`);
+          // eventBus.$emit("unreadCountsChanged", this.unreadCounts)
+          // console.log(`Marked notification ${notificationId} as unread.`);
         }
       },
       deleteNotification(notificationId){
@@ -290,14 +314,88 @@
             // fullNotificationList changed, so computed (Unread, AtMe, System) update
             this.fullNotificationList = this.fullNotificationList.filter(item => item.id !== notificationId);
             this.loadAllPageData()
-            eventBus.$emit('unreadCountsChanged', this.unreadCounts);
-            console.log(`Deleted notification with ID: ${notificationId}`);
+            // eventBus.$emit('unreadCountsChanged', this.totalUnread);
+            // console.log(`Deleted notification with ID: ${notificationId}`);
           })
           .catch(error => {
             if (error !== 'error') {
               this.$message({ type: 'error', message: 'Notification deletion failed!', showClose: true });
             }
           });
+      },
+      markPageAsUnread(pageList){
+        let that = this;
+        // Implement your logic to send a read request for each page in the pageList
+        // Once the requests are successful, update the readStatus in the pageList
+
+        // Iterate through each page in the pageList
+        pageList.forEach(notificationId => {
+          let notification = this.fullNotificationList.find(item => item.id === notificationId);
+          if (notification) {
+            notification.readStatus = false;
+          }
+        });
+
+        let notificationIds = pageList.map(page => page.id);
+        markPageAsUnread(notificationIds).then(res => {
+          // Handle success if needed
+          // fullNotificationList changed, so computed (Unread, Read) update
+          this.getAllNotifications();
+          // eventBus.$emit("unreadCountsChanged", this.totalUnread);
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'Page mark as read failed!', showClose: true});
+          }
+        });
+      },
+      markPageAsRead(pageList){
+        let that = this;
+        // Implement your logic to send a read request for each page in the pageList
+        // Once the requests are successful, update the readStatus in the pageList
+
+        // Iterate through each page in the pageList
+        pageList.forEach(notificationId => {
+          let notification = this.fullNotificationList.find(item => item.id === notificationId);
+          if (notification) {
+            notification.readStatus = true;
+          }
+        });
+
+        let notificationIds = pageList.map(page => page.id);
+        markPageAsRead(notificationIds).then(res => {
+          // Handle success if needed
+          // fullNotificationList changed, so computed (Unread, Read) update
+          this.getAllNotifications();
+          // eventBus.$emit("unreadCountsChanged", this.totalUnread);
+        }).catch(error => {
+          if (error !== 'error') {
+            that.$message({type: 'error', message: 'Page mark as unread failed!', showClose: true});
+          }
+        });
+      },
+      deletePage(pageList){
+        // Implement your logic to delete each page in the pageList
+        // Once the requests are successful, remove the deleted pages from the fullNotificationList
+
+        // Iterate through each page in the pageList
+        /*pageList.forEach(notificationId => {
+          this.fullNotificationList = this.fullNotificationList.filter(item => item.id !== notificationId);
+          this.totalAll = this.fullNotificationList.length;
+          eventBus.$emit('unreadCountsChanged', this.unreadCounts);
+          console.log(`Deleted page with ID: ${notificationId}`);
+        });*/
+        let notificationIds = pageList.map(page => page.id);
+        deletePage(notificationIds).then(res => {
+          // Handle success if needed
+          // Remove the deleted page from the fullNotificationList
+          this.getAllNotifications();
+          this.totalAll = this.fullNotificationList.length;
+          // eventBus.$emit('unreadCountsChanged', this.totalUnread);
+        }).catch(error => {
+          if (error !== 'error') {
+            this.$message({ type: 'error', message: 'Page deletion failed!', showClose: true });
+          }
+        });
       },
       handleAllSizeChange(val) {
         this.pageNumAll = 1;

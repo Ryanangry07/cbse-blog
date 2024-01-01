@@ -47,3 +47,27 @@ export function deleteById(notificationId) {
     method: 'get'
   })
 }
+
+export function markPageAsRead(page) {
+  return request({
+    url: '/notifications/read',
+    method: 'post',
+    data: page
+  })
+}
+
+export function markPageAsUnread(page) {
+  return request({
+    url: '/notifications/unread',
+    method: 'post',
+    data: page
+  })
+}
+
+export function deletePage(page) {
+  return request({
+    url: '/notifications/delete',
+    method: 'post',
+    data: page
+  })
+}

@@ -1,6 +1,5 @@
 package com.loloao.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -13,6 +12,7 @@ import com.loloao.mapper.NotificationMapper;
 import com.loloao.mapper.UserMapper;
 import com.loloao.service.NotificationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -65,6 +65,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
 
     @Override
+    @Transactional
     public void addNotificationAndUpdateUnreadCounts(User notifyUser, Notification notification){
         // fill in basic default information
         notification.setReadStatus(false);
@@ -81,55 +82,120 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     }
 
     @Override
+    @Transactional
     public void deleteById(Long notificationId) {
+        Notification notification = notificationMapper.selectById(notificationId);
+        // if read, do nothing
+        // if unread, update user's unreadCounts
+        if(!notification.getReadStatus()){
+            userUnreadCountsIncrement(notificationId, -1);
+        }
         notificationMapper.deleteById(notificationId);
     }
 
     @Override
+    @Transactional
     public void addNotification(Notification notification) {
         notificationMapper.insert(notification);
     }
 
     @Override
+    @Transactional
     public void markAsRead(Long id) {
-
-        Notification notification = notificationMapper.selectById(id);
-
         //update notification read_status to true
-        UpdateWrapper<Notification> wrapper = new UpdateWrapper<>();
-        wrapper.eq("id", id);
-        wrapper.set("read_status", true);
-        notificationMapper.update(null, wrapper);
+        updateNotificationReadStatus(id, true);
 
         //update user read_counts - 1
-        User user = userMapper.selectById(notification.getUid());
-        UpdateWrapper<User> userWrapper = new UpdateWrapper<>();
-        userWrapper.eq("id", user.getId());
-        int newCounts = user.getUnreadCounts() - 1;
-        userWrapper.set("unread_counts", (newCounts < 0) ? 0 : newCounts);
-        userMapper.update(null, userWrapper);
+        userUnreadCountsIncrement(id, -1);
 
     }
 
     @Override
+    @Transactional
     public void markAsUnread(Long id) {
-
-        Notification notification = notificationMapper.selectById(id);
-
         //update notification read_status to false (unread)
-        UpdateWrapper<Notification> wrapper = new UpdateWrapper<>();
-        wrapper.eq("id", id);
-        wrapper.set("read_status", false);
-        notificationMapper.update(null, wrapper);
+        updateNotificationReadStatus(id, false);
 
         //update user read_counts + 1 (one more notification unread)
+        userUnreadCountsIncrement(id, 1);
+    }
+
+    @Override
+    @Transactional
+    public void markPageAsRead(List<Long> page) {
+        //update notification's read_status in page to true
+        int decrement = updatePageReadStatus(page, true);
+
+        // update user unreadCounts
+        for (long notificationId: page){
+            // ture: update successfully
+            if(userUnreadCountsIncrement(notificationId, 0 - decrement)){
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void markPageAsUnread(List<Long> page) {
+        //update notification's read_status in page to true
+        int increment = updatePageReadStatus(page, false);
+
+        // update user unreadCounts
+        for (long notificationId: page){
+            // ture: update successfully
+            if(userUnreadCountsIncrement(notificationId, increment)){
+                break;
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deletePage(List<Long> page) {
+        // if delete 'unread', update user unread_counts
+        for (long notificationId: page){
+            Notification notification = notificationMapper.selectById(notificationId);
+            if(!notification.getReadStatus()){
+                userUnreadCountsIncrement(notificationId, -1);
+            }
+        }
+        //update/delete，返回值是：更新或删除的行数
+        notificationMapper.deleteBatchIds(page);
+
+
+
+    }
+
+    // update user's unreadCounts
+    private boolean userUnreadCountsIncrement(long notificationId, int increment){
+        Notification notification = notificationMapper.selectById(notificationId);
         User user = userMapper.selectById(notification.getUid());
+        if(user == null) {
+            return false;
+        }
         UpdateWrapper<User> userWrapper = new UpdateWrapper<>();
         userWrapper.eq("id", user.getId());
-        int newCounts = user.getUnreadCounts() + 1;
+        int newCounts = user.getUnreadCounts() + increment;
         userWrapper.set("unread_counts", (newCounts < 0) ? 0 : newCounts);
         userMapper.update(null, userWrapper);
+        return true;
+    }
 
+    private int updateNotificationReadStatus(long notificationId, boolean read){
+        UpdateWrapper<Notification> wrapper = new UpdateWrapper<>();
+        wrapper.eq("id", notificationId);
+        wrapper.set("read_status", read);
+        return notificationMapper.update(null, wrapper);
+    }
+
+
+    private int updatePageReadStatus(List<Long> notificationIds, boolean read){
+        UpdateWrapper<Notification> wrapper = new UpdateWrapper<>();
+        wrapper.in("id", notificationIds);
+        wrapper.set("read_status", read);
+        return notificationMapper.update(null, wrapper);
     }
 
 

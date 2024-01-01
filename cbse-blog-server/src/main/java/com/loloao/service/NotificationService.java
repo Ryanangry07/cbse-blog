@@ -24,4 +24,10 @@ public interface NotificationService extends IService<Notification> {
     void addNotificationAndUpdateUnreadCounts(User notifyUser, Notification notification);
 
     void deleteById(Long notificationId);
+
+    void markPageAsRead(List<Long> page);
+
+    void markPageAsUnread(List<Long> page);
+
+    void deletePage(List<Long> page);
 }
