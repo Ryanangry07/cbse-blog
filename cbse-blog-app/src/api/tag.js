@@ -67,3 +67,42 @@ export function searchTags(query, page) {
     }
   })
 }
+
+export function mergeTag(oldIDLists, newName) {
+  const data = {
+    oldIDLists,
+    newName
+  }
+  return request({
+    url: '/tags/merge',
+    method: 'post',
+    data
+  })
+}
+
+export function editTag(avatar, tagname, id) {
+  const data = {
+    id,
+    avatar,
+    tagname
+  }
+  return request({
+    url: '/tags/update',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteTag(id) {
+  return request({
+    url: `/tags/delete/${id}`,
+    method: 'get'
+  })
+}
+
+export function getTagByName(name){
+  return request({
+    url: `/tags/getID/${name}`,
+    method: 'get',
+  })
+}

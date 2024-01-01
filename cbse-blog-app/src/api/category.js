@@ -31,10 +31,11 @@ export function getCategoryDetail(id) {
   })
 }
 
-export function saveCategory(avatar, categoryname) {
+export function saveCategory(avatar, categoryname, description) {
   const data = {
     avatar,
-    categoryname
+    categoryname,
+    description
   }
   return request({
     url: '/categorys/create',
@@ -42,7 +43,6 @@ export function saveCategory(avatar, categoryname) {
     data
   })
 }
-
 
 export function searchCategorys(query, page) {
   return request({
@@ -62,3 +62,42 @@ export function searchCategorys(query, page) {
   })
 }
 
+export function mergeCategory(oldIDLists, newName) {
+  const data = {
+    oldIDLists,
+    newName
+  }
+  return request({
+    url: '/categorys/merge',
+    method: 'post',
+    data
+  })
+}
+
+export function editCategory(avatar, categoryname, id, description) {
+  const data = {
+    id,
+    avatar,
+    categoryname,
+    description
+  }
+  return request({
+    url: '/categorys/update',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteCategory(id) {
+  return request({
+    url: `/categorys/delete/${id}`,
+    method: 'get'
+  })
+}
+
+export function getCategoryByName(name){
+  return request({
+    url: `/categorys/getID/${name}`,
+    method: 'get',
+  })
+}

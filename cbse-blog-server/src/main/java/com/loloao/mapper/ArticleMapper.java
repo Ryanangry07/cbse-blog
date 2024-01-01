@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-
 /**
  * (Article)表数据库访问层
  *
@@ -16,27 +15,38 @@ import java.util.List;
  */
 public interface ArticleMapper extends BaseMapper<Article> {
 
-    @Select("SELECT m.*, YEAR(create_date) AS year,MONTH(create_date) AS month, COUNT(*) AS count " +
-            "FROM me_article as m GROUP BY year, month")
-    List<ArticleVo> listArchives();
+        @Select("SELECT m.*, YEAR(create_date) AS year,MONTH(create_date) AS month, COUNT(*) AS count " +
+                        "FROM me_article as m GROUP BY year, month")
+        List<ArticleVo> listArchives();
 
-    /*@Select("select a.category_id count(a.category_id) as count from me_category c" +
-            " left join me_article a on a.category_id = c.id where a.category_id = #{id} group by c.id ")
-    int getCountArticleByCategoryId(Integer id);
+        /*
+         * @Select("select a.category_id count(a.category_id) as count from me_category c"
+         * +
+         * " left join me_article a on a.category_id = c.id where a.category_id = #{id} group by c.id "
+         * )
+         * int getCountArticleByCategoryId(Integer id);
+         * 
+         * @Select("select a.tag_id, count(a.tag_id) as count from me_tag t" +
+         * " left join me_article_tag at on at.tag_id = t.id where at.tag_id = #{id} group by t.id "
+         * )
+         * int getCountArticleByTagId(Integer id);
+         */
 
-    @Select("select a.tag_id, count(a.tag_id) as count from me_tag t" +
-            " left join me_article_tag at on at.tag_id = t.id where at.tag_id = #{id} group by t.id ")
-    int getCountArticleByTagId(Integer id);*/
+        @Select("SELECT COUNT(*) AS count FROM me_article a WHERE a.category_id = #{id}")
+        int getCountArticleByCategoryId(Long id);
 
-    @Select("SELECT COUNT(*) AS count FROM me_article a WHERE a.category_id = #{id}")
-    int getCountArticleByCategoryId(Long id);
+        @Select("SELECT COUNT(*) AS count FROM me_article_tag at WHERE at.tag_id = #{id}")
+        int getCountArticleByTagId(Long id);
 
-    @Select("SELECT COUNT(*) AS count FROM me_article_tag at WHERE at.tag_id = #{id}")
-    int getCountArticleByTagId(Long id);
+        @Select("SELECT at.article_id FROM me_article_tag at WHERE at.tag_id = #{tagId}")
+        List<Integer> getArticleIdsByTagId(Long tagId);
 
-    @Select("SELECT at.article_id FROM me_article_tag at WHERE at.tag_id = #{tagId}")
-    List<Integer> getArticleIdsByTagId(Long tagId);
+        @Select("SELECT at.article_id FROM me_article_tag at WHERE at.tag_id = #{tagId}")
+        List<Integer> getArticleIdsByTagId(Long tagId);
 
-    @Select("SELECT s.article_id FROM me_star s WHERE s.user_id = #{starUid}")
-    List<Integer> getArticleIdsByStarUid(Long starUid);
+        @Select("SELECT s.article_id FROM me_star s WHERE s.user_id = #{starUid}")
+        List<Integer> getArticleIdsByStarUid(Long starUid);
+        
+        @Select("SELECT a.id FROM me_article a WHERE a.category_id = #{categoryId}")
+        List<Integer> getArticleIdsByCategoryId(String categoryId);
 }

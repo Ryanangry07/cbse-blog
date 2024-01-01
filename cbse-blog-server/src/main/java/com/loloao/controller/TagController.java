@@ -2,6 +2,7 @@ package com.loloao.controller;
 
 import com.loloao.common.Base;
 import com.loloao.common.Result;
+import com.loloao.entity.MergeRequestDTO;
 import com.loloao.entity.Tag;
 import com.loloao.enums.ResultCode;
 import com.loloao.service.TagService;
@@ -29,10 +30,9 @@ public class TagController {
     @Resource
     private TagService tagService;
 
-
     @GetMapping
     public Result listTags() {
-        //List<Tag> tags = tagService.findAll();
+        // List<Tag> tags = tagService.findAll();
         return Result.success(tagService.list());
     }
 
@@ -88,7 +88,7 @@ public class TagController {
     @PostMapping("/create")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result saveTag(@Validated @RequestBody Tag tag) {
-        if(UserUtils.getCurrentUser() == null){
+        if (UserUtils.getCurrentUser() == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
 
@@ -102,7 +102,7 @@ public class TagController {
     @PostMapping("/update")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result updateTag(@RequestBody Tag tag) {
-        if(UserUtils.getCurrentUser() == null){
+        if (UserUtils.getCurrentUser() == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         Result r = new Result();
@@ -122,7 +122,7 @@ public class TagController {
     @GetMapping("/delete/{id}")
     @RequiresRoles(Base.ROLE_ADMIN)
     public Result deleteTagById(@PathVariable("id") Integer id) {
-        if(UserUtils.getCurrentUser() == null){
+        if (UserUtils.getCurrentUser() == null) {
             return Result.error(ResultCode.USER_NOT_LOGGED_IN);
         }
         Result r = new Result();
@@ -132,10 +132,42 @@ public class TagController {
             return r;
         }
 
-        tagService.deleteTagById(id);
+        tagService.deleteTagById(id.toString());
 
         r.setResultCode(ResultCode.SUCCESS);
         return r;
     }
-}
 
+    @PostMapping("/merge")
+    @RequiresRoles(Base.ROLE_ADMIN)
+    public Result mergeCategory(@Validated @RequestBody MergeRequestDTO mergeRequestDTO) {
+        if (UserUtils.getCurrentUser() == null) {
+            return Result.error(ResultCode.USER_NOT_LOGGED_IN);
+        }
+        Result r = new Result();
+
+        Integer tagId = tagService.mergeTag(mergeRequestDTO.getOldIDLists(),
+                mergeRequestDTO.getNewName());
+
+        r.setResultCode(ResultCode.SUCCESS);
+        r.simple().put("tagId", tagId);
+        return r;
+    }
+
+    @GetMapping("/getID/{name}")
+    public Result getTagByName(@PathVariable("name") String name) {
+
+        Result result = new Result();
+
+        if (null == name) {
+            result.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return result;
+        }
+
+        Integer id = tagService.getTagIDByName(name);
+
+        result.setResultCode(ResultCode.SUCCESS);
+        result.setData(id);
+        return result;
+    }
+}

@@ -6,7 +6,6 @@ import com.loloao.vo.TagVO;
 
 import java.util.List;
 
-
 /**
  * (Tag)表服务接口
  *
@@ -19,11 +18,15 @@ public interface TagService extends IService<Tag> {
 
     Tag getTagById(Integer id);
 
+    Integer getTagIDByName(String name);
+
     Integer saveTag(Tag tag);
 
     Integer updateTag(Tag tag);
 
-    void deleteTagById(Integer id);
+    void deleteTagById(String id);
+
+    Integer mergeTag(String[] oldtags, String newTagName);
 
     List<Tag> listHotTags(int limit);
 

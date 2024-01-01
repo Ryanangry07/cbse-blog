@@ -3,6 +3,7 @@ package com.loloao.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.loloao.entity.Article;
 import com.loloao.entity.Category;
 import com.loloao.mapper.ArticleMapper;
 import com.loloao.mapper.CategoryMapper;
@@ -36,7 +37,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public Category getCategoryById(Integer id) {
-        return null;
+        return categoryMapper.selectById(id);
+    }
+
+    @Override
+    public Integer getCategoryIDByName(String name) {
+        return categoryMapper.getCategoryID(name);
     }
 
     @Override
@@ -46,12 +52,41 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public Integer updateCategory(Category category) {
-        return null;
+        Category c = new Category(category.getId(), category.getAvatar(), category.getCategoryname(),
+                category.getDescription());
+        return categoryMapper.updateById(c);
     }
 
     @Override
-    public void deleteCategoryById(Integer id) {
+    public void deleteCategoryById(String categoryID) {
+        Integer newID = categoryMapper.getCategoryID("Others");
+        List<Integer> articlesID = articleMapper.getArticleIdsByCategoryId(categoryID);
+        for (Integer articleID : articlesID) {
+            Article oldArticle = articleMapper.selectById(articleID);
+            // oldArticle.setCategory(newCategory);
+            oldArticle.setCategoryId(newID.longValue());
+            articleMapper.updateById(oldArticle);
+        }
+        categoryMapper.deleteById(categoryID);
+    }
 
+    @Override
+    public Integer mergeCategory(String[] oldCategories, String newCategoryName) {
+        Integer row = saveCategory(new Category(null, null, newCategoryName, null));
+        Integer newCategoryID = categoryMapper.getCategoryID(newCategoryName);
+        Category newCategory = categoryMapper.selectById(newCategoryID);
+
+        for (String categoryID : oldCategories) {
+            List<Integer> articlesID = articleMapper.getArticleIdsByCategoryId(categoryID);
+            for (Integer id : articlesID) {
+                Article oldArticle = articleMapper.selectById(id);
+                oldArticle.setCategory(newCategory);
+                oldArticle.setCategoryId(newCategoryID.longValue());
+                articleMapper.updateById(oldArticle);
+            }
+            categoryMapper.deleteById(categoryID);
+        }
+        return newCategoryID;
     }
 
     @Override
@@ -61,19 +96,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         wrapper.like(StringUtils.isNotBlank(keyword), Category::getCategoryname, keyword);
         List<Category> categories = categoryMapper.selectList(wrapper);
 
-
         List<CategoryVO> categoryVOS = new ArrayList<>();
-        for(Category category : categories){
+        for (Category category : categories) {
 
             CategoryVO categoryVO = new CategoryVO();
             categoryVO.setId(category.getId());
             categoryVO.setAvatar(category.getAvatar());
             categoryVO.setDescription(category.getDescription());
             categoryVO.setCategoryname(category.getCategoryname());
-            //get article counts
+            // get article counts
             int articlesCount = articleMapper.getCountArticleByCategoryId(category.getId());
             categoryVO.setArticles(articlesCount);
-            //add
+            // add
             categoryVOS.add(categoryVO);
         }
         return categoryVOS;
@@ -81,6 +115,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public CategoryVO getCategoryDetail(Integer categoryId) {
-        return null;
+        Category category = categoryMapper.selectById(categoryId);
+        CategoryVO categoryVO = new CategoryVO();
+        categoryVO.setId(category.getId());
+        categoryVO.setAvatar(category.getAvatar());
+        categoryVO.setDescription(category.getDescription());
+        categoryVO.setCategoryname(category.getCategoryname());
+
+        int articlesCount = articleMapper.getCountArticleByCategoryId(category.getId());
+        categoryVO.setArticles(articlesCount);
+        return categoryVO;
     }
 }
