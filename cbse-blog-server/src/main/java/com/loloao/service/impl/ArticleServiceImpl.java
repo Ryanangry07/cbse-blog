@@ -268,6 +268,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         oldArticle.setCategory(article.getCategory());
         oldArticle.setCategoryId(article.getCategory().getId());
 
+        articleMapper.updateById(oldArticle);
+
         // update body table
         oldArticle.setBody(article.getBody());
         ArticleBody body = new ArticleBody(
