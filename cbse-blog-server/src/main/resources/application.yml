@@ -5,12 +5,12 @@ server:
 # upload path @AuthController /upload
 me:
   upload:
-    path: /Users/chinfang/Downloads/blogFile/
+    path: E:/blogFile/
 
 # mysql
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/blog?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/cbse_blog?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver

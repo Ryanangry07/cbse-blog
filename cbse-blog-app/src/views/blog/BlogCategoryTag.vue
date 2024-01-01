@@ -327,7 +327,7 @@
       },
       deleteCategoryMessage(){
         let that = this;
-        this.$confirm("This will merge all the articles in this category to 'Others'. Continue?", 'Warning', {
+        this.$confirm("This will merge all the articles that only belong to this category to 'Others'. Continue?", 'Warning', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning'
@@ -355,12 +355,12 @@
           this.$message({
             type: 'info',
             message: 'Delete canceled'
-          });          
+          });
         });
       },
       deleteTagMessage(){
         let that = this;
-        this.$confirm("This will merge all the articles in this tag to 'Others'. Continue?", 'Warning', {
+        this.$confirm("This will merge all the articles that only belong to this tag to 'Others'. Continue?", 'Warning', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning'
@@ -386,7 +386,7 @@
           this.$message({
             type: 'info',
             message: 'Delete canceled'
-          });          
+          });
         });
       },
       handleAvatarSuccess(res, file) {
@@ -466,7 +466,7 @@
 
   .me-ct-title {
     height: 150px;
-    padding-top: 25px; 
+    padding-top: 25px;
     padding-bottom: 40px;
     text-align: center; /* Align text center */
   }
