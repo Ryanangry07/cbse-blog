@@ -65,7 +65,7 @@
             </span>
           </div>
           <div class="me-view-content">
-            <markdown-editor :editor=article.editor></markdown-editor>
+            <markdown-editor style="box-shadow: none" :editor=article.editor></markdown-editor>
           </div>
 
           <div class="me-view-end">
