@@ -25,4 +25,6 @@ public interface UserService extends IService<User> {
     int updateUser(User user);
 
     void deleteUserById(Long id);
+
+    void resetPassword(User reqUser);
 }

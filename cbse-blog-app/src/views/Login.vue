@@ -1,20 +1,25 @@
 <template>
-  <div id="login" v-title data-title="登录 - For Fun">
+  <div id="login" v-title data-title="Login - For Fun">
     <!--<video preload="auto" class="me-video-player" autoplay="autoplay" loop="loop">
           <source src="../../static/vedio/sea.mp4" type="video/mp4">
       </video>-->
 
     <div class="me-login-box me-login-box-radius">
-      <h1>ForFun 登录</h1>
+      <h1>Login</h1>
 
       <el-form ref="userForm" :model="userForm" :rules="rules">
         <el-form-item prop="account">
-          <el-input placeholder="用户名" v-model="userForm.account"></el-input>
+          <el-input placeholder="Username" v-model="userForm.account"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input placeholder="密码" type="password" v-model="userForm.password"></el-input>
+          <el-input placeholder="Password" type="password" v-model="userForm.password"></el-input>
         </el-form-item>
+
+        <div style="margin-top: -5px; margin-bottom: 5px">
+          <el-link style="margin-left: 30%" @click.native="goToForgetPassword">Forget Password</el-link>
+<!--          <a>Forget Password</a>-->
+        </div>
 
         <el-form-item size="small" class="me-login-button">
           <el-button type="primary" @click.native.prevent="login('userForm')">登录</el-button>
@@ -24,7 +29,7 @@
       <div class="me-login-design">
         <p>Designed by
           <strong>
-            <router-link to="/" class="me-login-design-color">ForFun</router-link>
+            <router-link to="/" class="me-login-design-color">LOLOBLOG</router-link>
           </strong>
         </p>
       </div>
@@ -44,12 +49,12 @@
         },
         rules: {
           account: [
-            {required: true, message: '请输入用户名', trigger: 'blur'},
-            {max: 10, message: '不能大于10个字符', trigger: 'blur'}
+            {required: true, message: 'please enter username', trigger: 'blur'},
+            {max: 10, message: 'no more than 10 characters', trigger: 'blur'}
           ],
           password: [
-            {required: true, message: '请输入密码', trigger: 'blur'},
-            {max: 10, message: '不能大于10个字符', trigger: 'blur'}
+            {required: true, message: 'please enter password', trigger: 'blur'},
+            {max: 10, message: 'no more than 10 characters', trigger: 'blur'}
           ]
         }
       }
@@ -72,6 +77,9 @@
             return false;
           }
         });
+      },
+      goToForgetPassword(){
+        this.$router.push("/forget");
       }
     }
   }
@@ -98,7 +106,7 @@
   .me-login-box {
     position: absolute;
     width: 300px;
-    height: 260px;
+    height: 280px;
     background-color: white;
     margin-top: 150px;
     margin-left: -180px;

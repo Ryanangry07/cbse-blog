@@ -12,6 +12,30 @@ export function login(account, password) {
   })
 }
 
+export function sendEmail(email) {
+  const data = {
+    email
+  }
+  return request({
+    url: '/email',
+    method: 'post',
+    data
+  })
+}
+
+
+export function resetPassword(email, password) {
+  const data = {
+    email,
+    password
+  }
+  return request({
+    url: '/reset',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/logout',

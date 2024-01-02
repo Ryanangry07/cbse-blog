@@ -88,6 +88,10 @@ const router = new Router({
     {
       path: '/register',
       component: r => require.ensure([], () => r(require('@/views/Register')), 'register')
+    },
+    {
+      path: '/forget',
+      component: r => require.ensure([], () => r(require('@/views/ForgetPassword')), 'forget')
     }
 
   ],

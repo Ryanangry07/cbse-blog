@@ -64,22 +64,6 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
 
 
-    @Override
-    @Transactional
-    public void addNotificationAndUpdateUnreadCounts(User notifyUser, Notification notification){
-        // fill in basic default information
-        notification.setReadStatus(false);
-        notification.setCreateDate(new Date());
-        notification.setUid(notifyUser.getId());
-        this.addNotification(notification);
-
-        //update user unreadCounts + 1
-        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
-        wrapper.eq("id", notifyUser.getId());
-        wrapper.set("unread_counts", notifyUser.getUnreadCounts() + 1);
-        userMapper.update(null, wrapper);
-
-    }
 
     @Override
     @Transactional
@@ -196,6 +180,24 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         wrapper.in("id", notificationIds);
         wrapper.set("read_status", read);
         return notificationMapper.update(null, wrapper);
+    }
+
+
+    @Override
+    @Transactional
+    public void addNotificationAndUpdateUnreadCounts(User notifyUser, Notification notification){
+        // fill in basic default information
+        notification.setReadStatus(false);
+        notification.setCreateDate(new Date());
+        notification.setUid(notifyUser.getId());
+        this.addNotification(notification);
+
+        //update user unreadCounts + 1
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+        wrapper.eq("id", notifyUser.getId());
+        wrapper.set("unread_counts", notifyUser.getUnreadCounts() + 1);
+        userMapper.update(null, wrapper);
+
     }
 
 

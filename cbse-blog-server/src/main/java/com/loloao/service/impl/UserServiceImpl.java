@@ -1,5 +1,6 @@
 package com.loloao.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loloao.entity.User;
 import com.loloao.mapper.UserMapper;
@@ -71,5 +72,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void deleteUserById(Long id) {
 
+    }
+
+    @Override
+    public void resetPassword(User reqUser) {
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+        wrapper.eq("id", reqUser.getId());
+        wrapper.set("password", reqUser.getPassword());
+        wrapper.set("salt", reqUser.getSalt());
+        userMapper.update(null, wrapper);
     }
 }

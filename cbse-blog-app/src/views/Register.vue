@@ -1,23 +1,23 @@
 <template>
-  <div id="register" v-title data-title="注册 - For Fun">
+  <div id="register" v-title data-title="Register - For Fun">
     <!--<video preload="auto" class="me-video-player" autoplay="autoplay" loop="loop">
           <source src="../../static/vedio/sea.mp4" type="video/mp4">
       </video>-->
 
     <div class="me-login-box me-login-box-radius">
-      <h1>ForFun 注册</h1>
+      <h1>Register</h1>
 
       <el-form ref="userForm" :model="userForm" :rules="rules">
         <el-form-item prop="account">
-          <el-input placeholder="用户名" v-model="userForm.account"></el-input>
+          <el-input placeholder="Username" v-model="userForm.account"></el-input>
         </el-form-item>
 
         <el-form-item prop="nickname">
-          <el-input placeholder="昵称" v-model="userForm.nickname"></el-input>
+          <el-input placeholder="Nickname" v-model="userForm.nickname"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input placeholder="密码" v-model="userForm.password"></el-input>
+          <el-input placeholder="Password" v-model="userForm.password"></el-input>
         </el-form-item>
 
         <el-form-item size="small" class="me-login-button">
@@ -28,7 +28,7 @@
       <div class="me-login-design">
         <p>Designed by
           <strong>
-            <router-link to="/" class="me-login-design-color">ForFun</router-link>
+            <router-link to="/" class="me-login-design-color">LOLOBLOG</router-link>
           </strong>
         </p>
       </div>
@@ -51,16 +51,16 @@
         },
         rules: {
           account: [
-            {required: true, message: '请输入用户名', trigger: 'blur'},
-            {max: 10, message: '不能大于10个字符', trigger: 'blur'}
+            {required: true, message: 'please enter username', trigger: 'blur'},
+            {max: 10, message: 'no more than 10 characters', trigger: 'blur'}
           ],
           nickname: [
-            {required: true, message: '请输入昵称', trigger: 'blur'},
-            {max: 10, message: '不能大于10个字符', trigger: 'blur'}
+            {required: true, message: 'please enter nickname', trigger: 'blur'},
+            {max: 10, message: 'no more than 10 characters', trigger: 'blur'}
           ],
           password: [
-            {required: true, message: '请输入密码', trigger: 'blur'},
-            {max: 10, message: '不能大于10个字符', trigger: 'blur'}
+            {required: true, message: 'please enter password', trigger: 'blur'},
+            {max: 10, message: 'no more than 10 characters', trigger: 'blur'}
           ]
         }
 
@@ -73,7 +73,7 @@
           if (valid) {
 
             that.$store.dispatch('register', that.userForm).then(() => {
-              that.$message({message: '注册成功 快写文章吧', type: 'success', showClose: true});
+              that.$message({message: 'Register successful, enjoy our website', type: 'success', showClose: true});
               that.$router.push({path: '/'})
             }).catch((error) => {
               if (error !== 'error') {

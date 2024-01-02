@@ -35,6 +35,20 @@ spring:
       # max file size of a single HTTP request
       max-request-size: 20MB
 
+  # send email
+  mail:
+    host: smtp.qq.com
+    username: 1342502141@qq.com
+    #Enter the following authorization code in the password input box when you log in with a third-party client.
+    #authorization code: xvmbtrcymippjjhi
+    password: xvmbtrcymippjjhi
+    from: 1342502141@qq.com
+    protocol: smtp
+    port: 465
+    default-encoding: UTF-8
+    properties:
+      "mail.smtp.ssl.enable": true
+
   # redis
 
   redis:

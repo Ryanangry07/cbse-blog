@@ -2,6 +2,7 @@ package com.loloao.controller;
 
 import com.alibaba.fastjson.support.spring.annotation.FastJsonFilter;
 import com.alibaba.fastjson.support.spring.annotation.FastJsonView;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.loloao.common.Base;
 import com.loloao.enums.ResultCode;
 import com.loloao.utils.UserUtils;
@@ -96,6 +97,26 @@ public class UserController {
             return result;
         }
 
+        result.setResultCode(ResultCode.SUCCESS);
+        return result;
+    }
+
+    @PostMapping("/checkEmail")
+    public Result checkEmail(@Validated @RequestBody String email) {
+        Result result = new Result();
+        System.out.println("checkEmail ==> " + email);
+        if (null == email) {
+            result.setResultCode(ResultCode.PARAM_IS_BLANK);
+            return result;
+        }
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getEmail, email);
+        User one = userService.getOne(wrapper);
+        if(one == null){
+            result.simple().put("exist", false);
+        }else{
+            result.simple().put("exist", true);
+        }
         result.setResultCode(ResultCode.SUCCESS);
         return result;
     }
