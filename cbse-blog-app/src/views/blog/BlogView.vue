@@ -35,12 +35,12 @@
 
 
             <div class="me-view-info">
-              <span>{{article.author.nickname}}</span>
+              <span>{{article.author.nickname}} </span>
               <div class="me-view-meta">
                 <span>{{article.createDate | format}}</span>
-                <span>阅读   {{article.viewCounts}}</span>
-                <span>点赞   {{article.starCounts}}</span>
-                <span>评论   {{article.commentCounts}}</span>
+                <span> | views {{article.viewCounts}} </span>
+                <span> | stars {{article.starCounts}} </span>
+                <span> | comments {{article.commentCounts}} </span>
               </div>
             </div>
             <el-button
@@ -49,7 +49,7 @@
               style="position: absolute;left: 55%;"
               size="mini"
               round
-              icon="el-icon-edit">编辑</el-button>
+              icon="el-icon-edit">Edit</el-button>
             <!--              v-if="this.article.author.id == this.$store.state.id"-->
             <el-button
               v-if="this.article.author.id == this.$store.state.id"
@@ -57,7 +57,7 @@
               style="position: absolute;left: 60%;"
               size="mini"
               round
-              icon="el-icon-delete">删除</el-button>
+              icon="el-icon-delete">Delete</el-button>
 
 
             <span class="me-pull-right me-article-count" style="margin-right: 30px">
@@ -70,7 +70,7 @@
 
           <div class="me-view-end">
             <el-alert
-              title="文章End..."
+              title="Article End..."
               type="success"
               center
               :closable="false">
@@ -78,13 +78,13 @@
           </div>
 
           <div class="me-view-tag">
-            标签：
+            Tag:
             <!--<el-tag v-for="t in article.tags" :key="t.id" class="me-view-tag-item" size="mini" type="success">{{t.tagname}}</el-tag>-->
             <el-button @click="tagOrCategory('tag', t.id)" size="mini" type="primary" v-for="t in article.tags" :key="t.id" round plain>{{t.tagname}}</el-button>
           </div>
 
           <div class="me-view-tag">
-            文章分类：
+            Category:
             <!--<span style="font-weight: 600">{{article.category.categoryname}}</span>-->
             <el-button @click="tagOrCategory('category', article.category.id)" size="mini" type="primary" round plain>{{article.category.categoryname}}</el-button>
           </div>
@@ -116,7 +116,7 @@
                   <el-input
                     type="textarea"
                     :autosize="{ minRows: 2}"
-                    placeholder="你的评论..."
+                    placeholder="Your comment..."
                     class="me-view-comment-text"
                     v-model="comment.content"
                     resize="none">
@@ -126,13 +126,13 @@
 
               <el-row :gutter="20">
                 <el-col :span="2" :offset="22">
-                  <el-button type="text" @click="publishComment()">评论</el-button>
+                  <el-button type="text" @click="publishComment()">Send</el-button>
                 </el-col>
               </el-row>
             </div>
 
             <div class="me-view-comment-title">
-              <span>{{article.commentCounts}} 条评论</span>
+              <span>{{article.commentCounts}} comments</span>
             </div>
 
             <commment-item
@@ -225,9 +225,9 @@
         this.$router.push({path: `/write/${this.article.id}`})
       },
       deleteArticle() {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('System will delete this article, continue?', 'Tips', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
           let that = this

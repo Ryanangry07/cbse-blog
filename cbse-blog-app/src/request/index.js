@@ -42,12 +42,12 @@ service.interceptors.response.use(
 
       //20001 用户未登录
       if (res.code === 20001) {
-        console.info("用户未登录。。")
+        console.info("User not login yet。。")
 
         Message({
           type: 'warning',
           showClose: true,
-          message: '未登录或登录超时，请重新登录哦'
+          message: 'Login failed or expired，please login again'
         })
 
         return Promise.reject('error');
@@ -55,11 +55,11 @@ service.interceptors.response.use(
 
       //70001 权限认证错误
       if (res.code === 70001) {
-        console.info("权限认证错误")
+        console.info("No access permission")
         Message({
           type: 'warning',
           showClose: true,
-          message: '你没有权限访问哦'
+          message: 'No access permission'
         })
         return Promise.reject('error');
       }
@@ -73,7 +73,7 @@ service.interceptors.response.use(
     Message({
       type: 'warning',
       showClose: true,
-      message: '连接超时'
+      message: 'Connection timeout, please try again later'
     })
     return Promise.reject('error')
   })

@@ -21,7 +21,7 @@
         </el-form-item>
 
         <el-form-item size="small" class="me-login-button">
-          <el-button type="primary" @click.native.prevent="register('userForm')">注册</el-button>
+          <el-button type="primary" @click.native.prevent="register('userForm')">Register</el-button>
         </el-form-item>
       </el-form>
 
@@ -71,7 +71,6 @@
         let that = this
         this.$refs[formName].validate((valid) => {
           if (valid) {
-
             that.$store.dispatch('register', that.userForm).then(() => {
               that.$message({message: 'Register successful, enjoy our website', type: 'success', showClose: true});
               that.$router.push({path: '/'})
@@ -80,12 +79,10 @@
                 that.$message({message: error, type: 'error', showClose: true});
               }
             })
-
           } else {
             return false;
           }
         });
-
       }
 
     }

@@ -22,7 +22,7 @@
         </div>
 
         <el-form-item size="small" class="me-login-button">
-          <el-button type="primary" @click.native.prevent="login('userForm')">登录</el-button>
+          <el-button type="primary" @click.native.prevent="login('userForm')">Login</el-button>
         </el-form-item>
       </el-form>
 

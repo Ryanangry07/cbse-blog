@@ -83,5 +83,5 @@ INSERT INTO `me_tag` VALUES ('8', '/tag/css.png', 'Css');
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'shimh', '', '/user/admin.png', '2018-01-22 17:14:49', '\0', '919431514@qq.com', null, '18396816462', '史明辉', 'c237910910ffa1f4827bf7fe1831ce43', 'e4153a582cbc45c3a199998b506dab28', 'normal', '\0', 'my about me','0');
-INSERT INTO `sys_user` VALUES ('15', 'shimh2', '\0', '/user/user_6.png', null, '\0', null, null, null, 'shimh2', '0df7246bbb5b1bf138edd17f7b64b33b', '480e1a68cbc7e05ff49f39d2b5222d0b', 'normal', '\0', 'your about me','0');
+INSERT INTO `sys_user` VALUES ('1', 'shimh', '', '/user/admin.png', '2018-01-22 17:14:49', '\0', '919431514@qq.com', null, '18396816462', '史明辉', 'c237910910ffa1f4827bf7fe1831ce43', 'e4153a582cbc45c3a199998b506dab28', 'normal', '\0', 'my about me');
+INSERT INTO `sys_user` VALUES ('15', 'shimh2', '\0', '/user/user_6.png', null, '\0', null, null, null, 'shimh2', '0df7246bbb5b1bf138edd17f7b64b33b', '480e1a68cbc7e05ff49f39d2b5222d0b', 'normal', '\0', 'your about me');

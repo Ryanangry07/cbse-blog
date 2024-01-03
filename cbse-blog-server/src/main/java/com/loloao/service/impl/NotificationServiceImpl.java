@@ -1,5 +1,6 @@
 package com.loloao.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -58,8 +59,13 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
     @Override
     public Integer loadUnreadCounts(Long userId) {
-        User user = userMapper.selectById(userId);
-        return user.getUnreadCounts();
+        LambdaQueryWrapper<Notification> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Notification::getUid, userId);
+        wrapper.eq(Notification::getReadStatus, false);
+        List<Notification> list = notificationMapper.selectList(wrapper);
+        //User user = userMapper.selectById(userId);
+
+        return list.size();
     }
 
 
@@ -71,9 +77,9 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         Notification notification = notificationMapper.selectById(notificationId);
         // if read, do nothing
         // if unread, update user's unreadCounts
-        if(!notification.getReadStatus()){
+        /*if(!notification.getReadStatus()){
             userUnreadCountsIncrement(notificationId, -1);
-        }
+        }*/
         notificationMapper.deleteById(notificationId);
     }
 
@@ -90,7 +96,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         updateNotificationReadStatus(id, true);
 
         //update user read_counts - 1
-        userUnreadCountsIncrement(id, -1);
+        //userUnreadCountsIncrement(id, -1);
 
     }
 
@@ -101,22 +107,22 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         updateNotificationReadStatus(id, false);
 
         //update user read_counts + 1 (one more notification unread)
-        userUnreadCountsIncrement(id, 1);
+        //userUnreadCountsIncrement(id, 1);
     }
 
     @Override
     @Transactional
     public void markPageAsRead(List<Long> page) {
         //update notification's read_status in page to true
-        int decrement = updatePageReadStatus(page, true);
+        updatePageReadStatus(page, true);
 
         // update user unreadCounts
-        for (long notificationId: page){
+        /*for (long notificationId: page){
             // ture: update successfully
             if(userUnreadCountsIncrement(notificationId, 0 - decrement)){
                 break;
             }
-        }
+        }*/
 
     }
 
@@ -124,27 +130,27 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     @Transactional
     public void markPageAsUnread(List<Long> page) {
         //update notification's read_status in page to true
-        int increment = updatePageReadStatus(page, false);
+        updatePageReadStatus(page, false);
 
         // update user unreadCounts
-        for (long notificationId: page){
+        /*for (long notificationId: page){
             // ture: update successfully
             if(userUnreadCountsIncrement(notificationId, increment)){
                 break;
             }
-        }
+        }*/
     }
 
     @Override
     @Transactional
     public void deletePage(List<Long> page) {
         // if delete 'unread', update user unread_counts
-        for (long notificationId: page){
+        /*for (long notificationId: page){
             Notification notification = notificationMapper.selectById(notificationId);
             if(!notification.getReadStatus()){
                 userUnreadCountsIncrement(notificationId, -1);
             }
-        }
+        }*/
         //update/delete，返回值是：更新或删除的行数
         notificationMapper.deleteBatchIds(page);
 
@@ -153,7 +159,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
     }
 
     // update user's unreadCounts
-    private boolean userUnreadCountsIncrement(long notificationId, int increment){
+    /*private boolean userUnreadCountsIncrement(long notificationId, int increment){
         Notification notification = notificationMapper.selectById(notificationId);
         User user = userMapper.selectById(notification.getUid());
         if(user == null) {
@@ -165,7 +171,7 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         userWrapper.set("unread_counts", (newCounts < 0) ? 0 : newCounts);
         userMapper.update(null, userWrapper);
         return true;
-    }
+    }*/
 
     private int updateNotificationReadStatus(long notificationId, boolean read){
         UpdateWrapper<Notification> wrapper = new UpdateWrapper<>();
@@ -193,10 +199,10 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
         this.addNotification(notification);
 
         //update user unreadCounts + 1
-        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+        /*UpdateWrapper<User> wrapper = new UpdateWrapper<>();
         wrapper.eq("id", notifyUser.getId());
         wrapper.set("unread_counts", notifyUser.getUnreadCounts() + 1);
-        userMapper.update(null, wrapper);
+        userMapper.update(null, wrapper);*/
 
     }
 

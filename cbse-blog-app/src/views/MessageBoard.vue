@@ -4,7 +4,7 @@
     <el-container class="">
       <el-main class="me-main">
         <el-alert
-          title="不能留言哦。。。。。。。。。。。"
+          title="Message board function is not opening for now。。。。。。。。。。。"
           type="warning"
           center
           show-icon>

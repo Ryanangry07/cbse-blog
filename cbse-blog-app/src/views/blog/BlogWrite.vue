@@ -3,12 +3,12 @@
     <el-container>
       <base-header :simple=true>
         <el-col :span="4" :offset="2">
-          <div class="me-write-info">写文章</div>
+          <div class="me-write-info">Write Article</div>
         </el-col>
         <el-col :span="4" :offset="6">
           <div class="me-write-btn">
-            <el-button round @click="publishShow">发布</el-button>
-            <el-button round @click="cancel">取消</el-button>
+            <el-button round @click="publishShow">Publish</el-button>
+            <el-button round @click="cancel">Cancel</el-button>
           </div>
         </el-col>
       </base-header>
@@ -20,7 +20,7 @@
                       type="textarea"
                       autosize
                       v-model="articleForm.title"
-                      placeholder="请输入标题"
+                      placeholder="Please enter your title"
                       class="me-write-input">
             </el-input>
 
@@ -30,7 +30,7 @@
         </el-main>
       </el-container>
 
-      <el-dialog title="摘要 分类 标签"
+      <el-dialog title="Abstract Category Tag"
                  :visible.sync="publishVisible"
                  :close-on-click-modal=false
                  custom-class="me-dialog">
@@ -40,24 +40,24 @@
             <el-input type="textarea"
                       v-model="articleForm.summary"
                       :rows="6"
-                      placeholder="请输入摘要">
+                      placeholder="Please enter abstract">
             </el-input>
           </el-form-item>
-          <el-form-item label="文章分类" prop="category">
-            <el-select v-model="articleForm.category" value-key="id" placeholder="请选择文章分类">
+          <el-form-item label="Article Category" prop="category">
+            <el-select v-model="articleForm.category" value-key="id" placeholder="Please select category">
               <el-option v-for="c in categorys" :key="c.id" :label="c.categoryname" :value="c"></el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item label="文章标签" prop="tags">
+          <el-form-item label="Article Tag" prop="tags">
             <el-checkbox-group v-model="articleForm.tags">
               <el-checkbox v-for="t in tags" :key="t.id" :label="t.id" name="tags">{{t.tagname}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="publishVisible = false">取 消</el-button>
-          <el-button type="primary" @click="publish('articleForm')">发布</el-button>
+          <el-button @click="publishVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="publish('articleForm')">Publish</el-button>
         </div>
       </el-dialog>
     </el-container>
@@ -235,9 +235,9 @@
         });
       },
       cancel() {
-        this.$confirm('文章将不会保存, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('The article will not be saved, continue?', 'Tips', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'cancel',
           type: 'warning'
         }).then(() => {
           this.$router.push('/')

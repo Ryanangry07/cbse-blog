@@ -21,7 +21,7 @@
         </el-form-item>
 
         <el-form-item size="small" class="me-login-button">
-          <el-button type="primary" @click.native.prevent="submitForgetForm">Submit</el-button>
+          <el-button type="primary" @click.native.prevent="submitForgetForm">Reset password</el-button>
         </el-form-item>
       </el-form>
 

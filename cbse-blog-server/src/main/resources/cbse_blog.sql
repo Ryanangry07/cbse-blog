@@ -137,7 +137,6 @@ create table `sys_user` (
                             `status` varchar(255) default null,
                             `about_me_visible` bit(1) default null,
                             `about_me` varchar(255) default null,
-                            `unread_counts` int(10) default 0;
                             primary key (`id`),
                             unique key `UK_awpog86ljqwb89aqa1c5gvdrd` (`account`),
                             unique key `UK_ahtq5ew3v0kt1n7hf1sgp7p8l` (`email`)

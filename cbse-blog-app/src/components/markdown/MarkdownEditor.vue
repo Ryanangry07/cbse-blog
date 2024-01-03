@@ -2,6 +2,7 @@
   <mavon-editor
     class="me-editor"
     ref="md"
+    language="en"
     v-model="editor.value"
     @imgAdd="imgAdd"
     v-bind="editor">
@@ -22,7 +23,8 @@
       editor: Object
     },
     data() {
-      return {}
+      return {
+      }
     },
     mounted() {
       this.$set(this.editor, 'ref', this.$refs.md)

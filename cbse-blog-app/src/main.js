@@ -4,6 +4,7 @@ import App from './App'
 
 import router from './router'
 import store from './store'
+import locale from 'element-ui/lib/locale/lang/en'
 
 import lodash from 'lodash'
 
@@ -17,7 +18,7 @@ import {formatTime} from "./utils/time";
 
 Vue.config.productionTip = false
 
-Vue.use(ElementUI)
+Vue.use(ElementUI,  { locale })
 
 Object.defineProperty(Vue.prototype, '$_', { value: lodash })
 

@@ -127,7 +127,7 @@ router.beforeEach((to, from, next) => {
       Message({
         type: 'warning',
         showClose: true,
-        message: '请先登录哦'
+        message: 'Please login first'
       })
 
     }
