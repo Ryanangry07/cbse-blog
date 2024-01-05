@@ -52,9 +52,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public Integer updateCategory(Category category) {
-        Category c = new Category(category.getId(), category.getAvatar(), category.getCategoryname(),
-                category.getDescription());
-        return categoryMapper.updateById(c);
+        return categoryMapper.updateById(category);
     }
 
     @Override
