@@ -59,8 +59,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
 
     @Override
     public Integer updateTag(Tag tag) {
-        Tag t = new Tag(tag.getId(), tag.getAvatar(), tag.getTagname());
-        return tagMapper.updateById(t);
+        return tagMapper.updateById(tag);
     }
 
     @Override
@@ -88,7 +87,6 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     public Integer mergeTag(String[] oldTags, String newTagName) {
         Integer row = saveTag(new Tag(null, null, newTagName));
         Integer newTagID = tagMapper.getTagID(newTagName);
-        // Tag newTag = tagMapper.selectById(newTagID);
 
         for (String tagID : oldTags) {
 
