@@ -233,10 +233,9 @@ import defaultAvatar from "@/assets/img/logo.png";
 import {
   getAllCategorysDetail,
   saveCategory,
-  mergeCategory,
-  searchCategorys,
+  mergeCategory
 } from "@/api/category";
-import { getAllTagsDetail, saveTag, mergeTag, searchTags } from "@/api/tag";
+import { getAllTagsDetail, saveTag, mergeTag} from "@/api/tag";
 // import {saveCategory, searchCategorys} from "../../api/category";
 
 export default {
@@ -350,7 +349,7 @@ export default {
           if (error !== "error") {
             that.$message({
               type: "error",
-              message: "文章分类加载失败",
+              message: "Fail loading category",
               showClose: true,
             });
           }
@@ -366,7 +365,7 @@ export default {
           if (error !== "error") {
             that.$message({
               type: "error",
-              message: "标签加载失败",
+              message: "Fail loading tag",
               showClose: true,
             });
           }
@@ -604,7 +603,7 @@ export default {
         //this.$message.error('上传头像图片只能是 JPG 格式!');
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("Uploaded image cannot exceed 2MB!");
       }
       //return isJPG && isLt2M;
       return isLt2M;
