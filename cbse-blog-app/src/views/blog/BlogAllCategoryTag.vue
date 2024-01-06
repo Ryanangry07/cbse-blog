@@ -177,7 +177,7 @@
           label-position="top"
           style="padding-right: 20px"
         >
-        
+
           <el-form-item label="Select Category to Merge:" prop="selectedcategories">
             <el-checkbox-group v-model="mergeCategoryForm.selectedcategories" size="mini">
               <el-checkbox v-for="c in categorys" v-if="c.categoryname !== 'Others'" :key="c.id" :label="c.id" border>{{c.categoryname}}</el-checkbox>
@@ -208,7 +208,7 @@
           label-position="top"
           style="padding-right: 20px"
         >
-        
+
           <el-form-item label="Select Tag to Merge:" prop="selectedtags">
             <el-checkbox-group v-model="mergeTagForm.selectedtags" size="mini">
               <el-checkbox v-for="t in tags" v-if="t.tagname !== 'Others'" :key="t.id" :label="t.id" border>{{t.tagname}}</el-checkbox>
@@ -254,13 +254,13 @@ export default {
       mergeTagDialogVisible: false,
       mergeCategoryForm: {
         id: "",
-        selectedcategories: [], 
-        mergedcategoryname: "", 
+        selectedcategories: [],
+        mergedcategoryname: "",
       },
       mergeTagForm: {
         id: "",
-        selectedtags: [], 
-        mergedtagname: "", 
+        selectedtags: [],
+        mergedtagname: "",
       },
       categoryForm: {
         id: "",
@@ -335,7 +335,7 @@ export default {
   },
   methods: {
     view(id) {
-      this.$router.push({ 
+      this.$router.push({
         path: `/${this.currentActiveName}/${id}`,
       });
     },
@@ -597,16 +597,24 @@ export default {
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG) {
-        //this.$message.error('上传头像图片只能是 JPG 格式!');
+      /*if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }*/
+
+      if (!isJPG && !isPNG) {
+        this.$message.error('You can only upload JPG or PNG image!');
       }
       if (!isLt2M) {
-        this.$message.error("Uploaded image cannot exceed 2MB!");
+        this.$message.error("The size of image cannot exceed 2MB!");
       }
       //return isJPG && isLt2M;
-      return isLt2M;
+      //return isLt2M;
+
+      //if less than 2MB and correct image format, return true
+      return isLt2M && (isJPG || isPNG);
     },
     checkUniqueCategoryName(rule, value, callback) {
       // Retrieve category names from categorys array

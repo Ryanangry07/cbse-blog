@@ -107,16 +107,17 @@
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
+        const isPNG = file.type === 'image/png';
         const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG) {
-          //this.$message.error('上传头像图片只能是 JPG 格式!');
+        if (!isJPG && !isPNG) {
+          this.$message.error('You can only upload JPG or PNG image!');
         }
         if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
+          this.$message.error('The size of image cannot exceed 2MB!');
         }
-        //return isJPG && isLt2M;
-        return isLt2M;
+        //if less than 2MB and correct image format, return true
+        return isLt2M && (isJPG || isPNG);
       },
       handleAvatarSuccess(res, file, fileList) {
         // Handle the avatar upload success, update user.avatar with the new URL
