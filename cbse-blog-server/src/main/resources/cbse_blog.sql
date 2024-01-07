@@ -138,8 +138,7 @@ create table `sys_user` (
                             `about_me_visible` bit(1) default null,
                             `about_me` varchar(255) default null,
                             primary key (`id`),
-                            unique key `UK_awpog86ljqwb89aqa1c5gvdrd` (`account`),
-                            unique key `UK_ahtq5ew3v0kt1n7hf1sgp7p8l` (`email`)
+                            unique key `UK_awpog86ljqwb89aqa1c5gvdrd` (`account`)
 ) engine=innodb auto_increment=16 default charset=utf8;
 
 drop table if exists `me_star`;
