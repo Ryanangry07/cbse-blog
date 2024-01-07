@@ -21,11 +21,31 @@
               ref="popoverA"
               placement="bottom"
               title="About Me"
-              width="200"
+              style="text-align: center"
+              width="350"
               trigger="click">
                 <template v-if="article.author.aboutMeVisible">
-                  <!-- If aboutMeVisible is true, show user's aboutMe content -->
-                  <div>{{ article.author.aboutMe }}</div>
+<!--                   If aboutMeVisible is true, show user's aboutMe content-->
+                  <div v-if="article.author.email"><span style="font-weight: bold">Email</span>: {{article.author.email}}</div>
+                  <div v-if="article.author.mobilePhoneNumber"><span style="font-weight: bold">Mobile</span>: {{article.author.mobilePhoneNumber}}</div>
+                  <div><span style="font-weight: bold">About me</span>: {{ article.author.aboutMe }}</div>
+
+<!--                  <el-form label-width="150px" class="demo-ruleForm">
+                    <el-form-item label="Email" style="border: none">
+                      <el-input v-model="article.author.email" readonly></el-input>
+                    </el-form-item>
+                    <el-form-item label="Mobile number">
+                      <el-input v-model="article.author.mobilePhoneNumber" readonly></el-input>
+                    </el-form-item>
+                    <el-form-item label="About me">
+                      <el-input v-model="article.author.aboutMe" readonly></el-input>
+                    </el-form-item>
+                  </el-form>-->
+<!--                  <el-descriptions style="width: 500px" title="About me">
+                    <el-descriptions-item label="Email" v-if="article.author.email">{{article.author.email}}</el-descriptions-item>
+                    <el-descriptions-item label="Mobile number" v-if="article.author.mobilePhoneNumber">{{article.author.mobilePhoneNumber}}</el-descriptions-item>
+                    <el-descriptions-item label="About me">{{ article.author.aboutMe }}</el-descriptions-item>
+                  </el-descriptions>-->
                 </template>
                 <template v-else>
                   <!-- If aboutMeVisible is false, show default content -->
@@ -199,6 +219,8 @@
           content: ''
         },
         author: {
+          email: '',
+          mobilePhoneNumber: '',
           aboutMeVisible: '',
           aboutMe: ''
         }

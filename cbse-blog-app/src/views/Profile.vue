@@ -5,7 +5,7 @@
       <div slot="header" class="clearfix header-center">
         <span>User Profile</span>
       </div>
-      <el-form label-position="right" :model="user" label-width="170px">
+      <el-form ref="user" label-position="right" :model="user" label-width="170px" :rules="rules">
         <el-form-item label="Account">
           <el-input v-model="user.account" disabled></el-input>
         </el-form-item>
@@ -37,8 +37,8 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="Email">
-          <el-input v-model="user.email"></el-input>
+        <el-form-item label="Email" prop="email">
+          <el-input type="email" v-model="user.email"></el-input>
         </el-form-item>
         <el-form-item label="Mobile Number">
           <el-input v-model="user.mobilePhoneNumber"></el-input>
@@ -81,6 +81,12 @@
           aboutMeVisible: '',
           aboutMe: ''
         },
+        rules: {
+          email: [
+            {required: true, message: 'please enter email', trigger: 'blur'},
+            {pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: 'Invalid email', trigger: 'blur'},
+          ]
+        }
       };
     },
     methods: {
@@ -131,21 +137,29 @@
         console.log(that.user.avatar)
       },
       saveProfile() {
-        // Implement your logic to save the user profile changes
-        console.log('Profile saved:', this.user);
-        let that = this
-        saveUserProfile(that.user).then(res => {
-          that.$store.state.avatar = that.user.avatar
-          this.$message({
-            showClose: true,
-            message: 'Congrats, update profile successfully.',
-            type: 'success'
-          });
-        }).catch(error => {
-          if (error !== 'error') {
-            that.$message({type: 'error', message: 'User Profile Load Failed', showClose: true})
+        this.$refs.user.validate((valid) => {
+          if (valid) {
+            console.log('valid profile')
+            // Implement your logic to save the user profile changes
+            console.log('Profile saved:', this.user);
+            let that = this
+            saveUserProfile(that.user).then(res => {
+              that.$store.state.avatar = that.user.avatar
+              this.$message({
+                showClose: true,
+                message: 'Congrats, update profile successfully.',
+                type: 'success'
+              });
+            }).catch(error => {
+              if (error !== 'error') {
+                that.$message({type: 'error', message: 'User Profile Load Failed', showClose: true})
+              }
+            })
+          } else {
+            console.log('invalid profile')
+            return false;
           }
-        })
+        });
       }
     }
   }
