@@ -12,7 +12,7 @@
  Date: 04/28/2018 09:14:32 AM
 */
 
-SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+/*SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));*/
 
 show databases;
 create database cbse_blog;
